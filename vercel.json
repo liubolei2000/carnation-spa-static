@@ -1,0 +1,18 @@
+{
+  "toolbar": false,
+  "crons": [
+    {
+      "path": "/api/cron/remind",
+      "schedule": "0 * * * *"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}

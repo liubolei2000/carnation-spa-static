@@ -1,0 +1,199 @@
+// ═══════════════════════════════════════════════════
+// Carnation Spa — Prisma Schema
+// Database: PostgreSQL (local Docker)
+// ═══════════════════════════════════════════════════
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  OWNER      // 店主 — full access, created at init
+  STAFF      // 前台 — manage bookings, view all
+  THERAPIST  // 技师 — view own schedule only
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum AppointmentSource {
+  ONLINE  // customer self-booked
+  MANUAL  // staff phone booking
+}
+
+enum SmsCodePurpose {
+  BOOKING // customer booking verification
+  MANAGE  // manage/cancel link re-send
+}
+
+enum SiteConfigType {
+  TEXT
+  RICHTEXT
+  IMAGE
+  URL
+}
+
+// ─────────────────────────────────────────
+// ACCOUNTS  (staff login)
+// ─────────────────────────────────────────
+
+model Account {
+  id           String    @id @default(cuid())
+  phone        String    @unique
+  passwordHash String
+  name         String
+  role         Role      @default(STAFF)
+  isActive     Boolean   @default(true)
+
+  // only set when role = THERAPIST
+  therapistId  String?   @unique
+  therapist    Therapist? @relation(fields: [therapistId], references: [id])
+
+  // who created this account (null = system-generated owner)
+  createdById  String?
+  createdBy    Account?  @relation("AccountCreatedBy", fields: [createdById], references: [id])
+  createdAccounts Account[] @relation("AccountCreatedBy")
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([role])
+}
+
+// ─────────────────────────────────────────
+// THERAPISTS
+// ─────────────────────────────────────────
+
+model Therapist {
+  id              String   @id @default(cuid())
+  name            String
+  avatarUrl       String?  // Supabase Storage path
+  title           String?  // e.g. "Lead Therapist · 8 yrs"
+  bio             String?
+  googleReviewUrl String?
+  bufferMins      Int      @default(15)
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+
+  account      Account?
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+// ─────────────────────────────────────────
+// SERVICES (massage types)
+// ─────────────────────────────────────────
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  durationMin Int      // minutes
+  price       Decimal  @db.Decimal(8, 2)
+  imageUrl    String?  // Supabase Storage path
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+// ─────────────────────────────────────────
+// APPOINTMENTS
+// ─────────────────────────────────────────
+
+model Appointment {
+  id             String            @id @default(cuid())
+
+  serviceId      String
+  service        Service           @relation(fields: [serviceId], references: [id])
+
+  therapistId    String
+  therapist      Therapist         @relation(fields: [therapistId], references: [id])
+
+  customerName   String
+  customerPhone  String
+
+  appointmentAt  DateTime          // session start (UTC)
+  endsAt         DateTime          // session end = appointmentAt + service.durationMin (redundant for query performance)
+
+  status         AppointmentStatus @default(PENDING)
+  source         AppointmentSource @default(ONLINE)
+
+  notes          String?
+
+  // self-manage token (customers)
+  manageToken    String            @unique @default(cuid())
+  tokenExpiresAt DateTime
+
+  // SMS reminders
+  reminded24h    Boolean           @default(false)
+  reminded2h     Boolean           @default(false)
+
+  // who manually entered this (staff bookings)
+  createdById    String?
+
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  // prevent double-booking per therapist
+  @@index([therapistId, appointmentAt])
+  @@index([therapistId, endsAt])
+  @@index([manageToken])
+  @@index([customerPhone])
+  @@index([status])
+  @@index([appointmentAt])
+}
+
+// ─────────────────────────────────────────
+// SMS VERIFICATION CODES
+// ─────────────────────────────────────────
+
+model SmsCode {
+  id        String         @id @default(cuid())
+  phone     String
+  code      String         // 6-digit
+  purpose   SmsCodePurpose
+  expiresAt DateTime
+  used      Boolean        @default(false)
+  attempts  Int            @default(0) // max 5 attempts
+
+  createdAt DateTime       @default(now())
+
+  @@index([phone, purpose])
+  @@index([expiresAt])
+}
+
+// ─────────────────────────────────────────
+// SITE CONFIG (editable website content)
+// ─────────────────────────────────────────
+
+model SiteConfig {
+  key       String         @id   // e.g. "hero_title", "about_text"
+  value     String
+  type      SiteConfigType @default(TEXT)
+  updatedAt DateTime       @updatedAt
+}

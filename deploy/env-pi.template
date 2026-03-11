@@ -1,0 +1,31 @@
+# ============================================================
+# 复制此文件为项目根目录的 .env，填入正确的值
+# ============================================================
+
+# 数据库（Pi 上 docker-compose 自动管理，不用改）
+DATABASE_URL="postgresql://carnation:carnation123@db:5432/carnation_spa"
+DIRECT_URL="postgresql://carnation:carnation123@db:5432/carnation_spa"
+
+# !! 改成你的公网域名 !!
+NEXT_PUBLIC_APP_URL="https://你的域名.com"
+
+# JWT（生产环境务必换成随机强密码，至少32位）
+JWT_SECRET="换成随机强密码至少32个字符"
+JWT_EXPIRES_IN="7d"
+
+# 管理员初始账号
+ADMIN_PHONE="+19783300895"
+ADMIN_PASSWORD="admin123"
+
+# Android SMS Gateway
+SMS_GATEWAY_URL="http://192.168.0.111:8080"
+SMS_GATEWAY_USER="sms"
+SMS_GATEWAY_PASS="iQBsi7HF"
+
+# Twilio Verify（短信验证码，可选）
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_VERIFY_SERVICE_SID=
+
+# Cron 安全密钥
+CRON_SECRET="换成随机字符串"

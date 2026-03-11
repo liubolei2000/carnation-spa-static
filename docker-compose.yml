@@ -1,0 +1,47 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: carnation-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       carnation_spa
+      POSTGRES_USER:     carnation
+      POSTGRES_PASSWORD: carnation123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # 首次启动自动导入备份（文件不存在时跳过）
+      - ./deploy/db-backup.sql:/docker-entrypoint-initdb.d/db-backup.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carnation -d carnation_spa"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: carnation-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL:              postgresql://carnation:carnation123@db:5432/carnation_spa
+      DIRECT_URL:                postgresql://carnation:carnation123@db:5432/carnation_spa
+      JWT_SECRET:                ${JWT_SECRET}
+      JWT_EXPIRES_IN:            ${JWT_EXPIRES_IN:-7d}
+      NEXT_PUBLIC_APP_URL:       ${NEXT_PUBLIC_APP_URL}
+      SMS_GATEWAY_URL:           ${SMS_GATEWAY_URL}
+      SMS_GATEWAY_USER:          ${SMS_GATEWAY_USER}
+      SMS_GATEWAY_PASS:          ${SMS_GATEWAY_PASS}
+      TWILIO_ACCOUNT_SID:        ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN:         ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_VERIFY_SERVICE_SID: ${TWILIO_VERIFY_SERVICE_SID:-}
+      CRON_SECRET:               ${CRON_SECRET:-}
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+      TURNSTILE_SECRET_KEY:      ${TURNSTILE_SECRET_KEY:-}
+
+volumes:
+  pgdata:
