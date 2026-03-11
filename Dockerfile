@@ -2,13 +2,13 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --omit=dev --ignore-scripts
+RUN npm install --omit=dev --legacy-peer-deps --ignore-scripts
 
 # ── Stage 2: 构建 ──────────────────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY . .
 # 为 Pi 5 (linux-arm64) 生成 Prisma client
 RUN npx prisma generate
