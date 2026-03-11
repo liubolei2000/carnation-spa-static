@@ -168,9 +168,13 @@ function fmtTime(d: Date) {
 }
 function manageUrl(token: string) { return `${process.env.NEXT_PUBLIC_APP_URL}/manage/${token}` }
 
+const OWNER = '+19783300895'
+
 export async function sendBookingConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
     `[Carnation Spa] Booking confirmed!\nService: ${info.serviceName}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nDirections: ${MAPS_URL}\nManage: ${manageUrl(info.manageToken)}`)
+  await sendSms(OWNER,
+    `[NEW BOOKING] ${info.customerName}\nService: ${info.serviceName}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nPhone: ${info.customerPhone}`)
 }
 export async function sendReminder24h(info: BookingInfo) {
   await sendSms(info.customerPhone,
@@ -183,8 +187,12 @@ export async function sendReminder2h(info: BookingInfo) {
 export async function sendRescheduleConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
     `[Carnation Spa] Your appointment has been rescheduled!\nService: ${info.serviceName}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
+  await sendSms(OWNER,
+    `[RESCHEDULED] ${info.customerName}\nService: ${info.serviceName}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nPhone: ${info.customerPhone}`)
 }
 export async function sendCancellationNotice(info: BookingInfo) {
   await sendSms(info.customerPhone,
     `[Carnation Spa] Your booking on ${fmt(info.appointmentAt)} with ${info.therapistName} has been cancelled.\nBook again: ${process.env.NEXT_PUBLIC_APP_URL}`)
+  await sendSms(OWNER,
+    `[CANCELLED] ${info.customerName}\nService: ${info.serviceName}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nPhone: ${info.customerPhone}`)
 }
