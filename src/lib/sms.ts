@@ -98,7 +98,7 @@ export async function sendVerificationCode(
     }
   }
 
-  // ── 开发：DB 验证码 ───────────────────────────────────
+  // ── DB 验证码 + SMS 发送 ──────────────────────────────
   const tenMinutesAgo = new Date(Date.now() - 10 * 60_000)
   const recent = await prisma.smsCode.count({
     where: { phone, purpose, createdAt: { gte: tenMinutesAgo } },
@@ -107,10 +107,19 @@ export async function sendVerificationCode(
 
   await prisma.smsCode.updateMany({ where: { phone, purpose, used: false }, data: { used: true } })
 
-  const code = '123456'
+  const code = IS_DEV ? '123456' : String(Math.floor(100000 + Math.random() * 900000))
   const expiresAt = new Date(Date.now() + 10 * 60_000)
   await prisma.smsCode.create({ data: { phone, code, purpose, expiresAt } })
-  console.log(`\n🔑 [DEV] 验证码: ${code}  (开发模式固定值)\n`)
+
+  if (IS_DEV) {
+    console.log(`\n🔑 [DEV] 验证码: ${code}  (开发模式固定值)\n`)
+  } else {
+    const sent = await sendSms(phone, `[Carnation Spa] Your verification code is: ${code}  (valid 10 min)`)
+    if (!sent) {
+      console.error('[SMS Code] Failed to send code to', phone)
+      return { success: false, error: 'SEND_FAILED' }
+    }
+  }
   return { success: true }
 }
 
