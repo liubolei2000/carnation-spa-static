@@ -15,7 +15,8 @@ RUN npx prisma generate
 RUN npm run build
 
 # ── Stage 3: 运行（最小镜像）─────────────────────────────
-FROM node:20-alpine AS runner
+FROM node:20-slim AS runner
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
