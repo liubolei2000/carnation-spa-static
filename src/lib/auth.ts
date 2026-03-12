@@ -67,7 +67,7 @@ export function setSessionCookie(token: string) {
     name:     COOKIE_NAME,
     value:    token,
     httpOnly: true,
-    secure:   process.env.NEXT_PUBLIC_APP_URL?.startsWith('https') ?? false,
+    secure:   false,  // HTTP on local Pi — HTTPS not used
     sameSite: 'lax' as const,
     maxAge:   60 * 60 * 24 * 7, // 7 days
     path:     '/',
