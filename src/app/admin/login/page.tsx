@@ -1,33 +1,72 @@
 'use client'
 // src/app/admin/login/page.tsx
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+
+declare global {
+  interface Window {
+    turnstileCallback?: (token: string) => void
+    turnstile?: { reset: (widgetId: string) => void }
+    _turnstileWidgetId?: string
+  }
+}
+
+const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
 export default function LoginPage() {
   const router = useRouter()
-  const [phone, setPhone]     = useState('')
+  const [phone, setPhone]       = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
-  const [lang, setLang]       = useState<'zh'|'en'>('zh')
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [lang, setLang]         = useState<'zh'|'en'>('zh')
+  const [cfToken, setCfToken]   = useState('')
+  const widgetRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!SITE_KEY) return
+    window.turnstileCallback = (token: string) => setCfToken(token)
+    const script = document.createElement('script')
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad'
+    script.async = true
+    script.defer = true
+    ;(window as any).onTurnstileLoad = () => {
+      if (widgetRef.current && window.turnstile) {
+        window._turnstileWidgetId = (window.turnstile as any).render(widgetRef.current, {
+          sitekey: SITE_KEY,
+          callback: window.turnstileCallback,
+          theme: 'dark',
+        })
+      }
+    }
+    document.head.appendChild(script)
+    return () => { document.head.removeChild(script) }
+  }, [])
 
   async function login() {
     if (!phone || !password) { setError(lang==='zh'?'请填写完整信息':'Fill in all fields'); return }
+    if (SITE_KEY && !cfToken) { setError(lang==='zh'?'请完成人机验证':'Please complete the CAPTCHA'); return }
     setLoading(true); setError('')
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password }),
+        body: JSON.stringify({ phone, password, cfToken }),
       })
       setLoading(false)
       if (res.ok) {
         router.replace('/admin/dashboard')
       } else {
         const data = await res.json()
-        setError(data.error === 'INVALID_CREDENTIALS'
-          ? (lang==='zh' ? '手机号或密码错误' : 'Invalid credentials')
-          : (lang==='zh' ? '登录失败，请重试' : 'Login failed'))
+        if (window._turnstileWidgetId && window.turnstile)
+          window.turnstile.reset(window._turnstileWidgetId)
+        setCfToken('')
+        setError(
+          data.error === 'INVALID_CREDENTIALS' ? (lang==='zh' ? '手机号或密码错误' : 'Invalid credentials') :
+          data.error === 'RATE_LIMITED'         ? (lang==='zh' ? '尝试次数过多，请15分钟后再试' : 'Too many attempts, try again in 15 min') :
+          data.error === 'CAPTCHA_FAILED'       ? (lang==='zh' ? '人机验证失败，请重试' : 'CAPTCHA failed, please retry') :
+          (lang==='zh' ? '登录失败，请重试' : 'Login failed')
+        )
       }
     } catch {
       setLoading(false)
@@ -80,6 +119,12 @@ export default function LoginPage() {
           <input style={s.input} type="password" value={password} onChange={e => setPassword(e.target.value)}
             placeholder="••••••••" onKeyDown={e => e.key==='Enter' && login()} />
         </div>
+
+        {SITE_KEY && (
+          <div style={{ marginBottom:'1.2rem' }}>
+            <div ref={widgetRef} />
+          </div>
+        )}
 
         <button style={{ ...s.btn, opacity: loading?0.7:1 }} onClick={login} disabled={loading}>
           {loading ? (lang==='zh'?'登录中…':'Signing in…') : (lang==='zh'?'登录控制台':'Sign In')}
