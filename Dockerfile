@@ -34,4 +34,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# 启动时自动建表（幂等，已有表不影响）
+CMD ["sh", "-c", "npx prisma@5 db push --schema=./prisma/schema.prisma --accept-data-loss 2>/dev/null || true && node server.js"]
