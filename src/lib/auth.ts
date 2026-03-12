@@ -67,7 +67,7 @@ export function setSessionCookie(token: string) {
     name:     COOKIE_NAME,
     value:    token,
     httpOnly: true,
-    secure:   process.env.NODE_ENV === 'production',
+    secure:   process.env.NEXT_PUBLIC_APP_URL?.startsWith('https') ?? false,
     sameSite: 'lax' as const,
     maxAge:   60 * 60 * 24 * 7, // 7 days
     path:     '/',
