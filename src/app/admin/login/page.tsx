@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 declare global {
   interface Window {
     turnstileCallback?: (token: string) => void
-    turnstile?: { reset: (widgetId: string) => void }
+    turnstile?: { render: (el: HTMLElement, opts: object) => string; reset: (id: string) => void; getResponse: (id: string) => string | undefined }
     _turnstileWidgetId?: string
   }
 }
