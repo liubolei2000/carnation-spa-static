@@ -13,10 +13,15 @@ async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ secret, response: token, remoteip: ip }),
     })
+    if (!res.ok) {
+      console.warn('[Turnstile] API returned', res.status, '— allowing request through')
+      return true  // API unavailable, fall back to rate limiting only
+    }
     const data = await res.json()
     return data.success === true
   } catch {
-    return false
+    console.warn('[Turnstile] API error — allowing request through')
+    return true  // API unavailable, fall back to rate limiting only
   }
 }
 
