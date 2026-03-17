@@ -24,11 +24,14 @@ const STATUS_ZH: Record<string,string> = {
 
 export default function AppointmentsPage() {
   const router = useRouter()
+  const todayStr = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }) // YYYY-MM-DD
+
   const [appts, setAppts]         = useState<Appt[]>([])
   const [loading, setLoading]     = useState(true)
   const [statusFilter, setStatus] = useState('ALL')
   const [search, setSearch]       = useState('')
   const [dateFilter, setDate]     = useState('')
+  const [showPast, setShowPast]   = useState(false)
   const [modal, setModal]         = useState<Appt | null>(null)
   const [expanded, setExpanded]   = useState<string | null>(null)
   const [updating, setUpdating]   = useState(false)
@@ -49,13 +52,17 @@ export default function AppointmentsPage() {
     setLoading(true)
     const p = new URLSearchParams()
     if (statusFilter !== 'ALL') p.set('status', statusFilter)
-    if (dateFilter) p.set('date', dateFilter)
+    if (dateFilter) {
+      p.set('date', dateFilter)
+    } else if (!showPast) {
+      p.set('from', todayStr())
+    }
     const res = await fetch('/api/appointments?' + p)
     const data = await res.json()
     setAppts(Array.isArray(data) ? data : [])
     setLoading(false)
   }
-  useEffect(() => { load() }, [statusFilter, dateFilter])
+  useEffect(() => { load() }, [statusFilter, dateFilter, showPast])
 
   async function updateStatus(id: string, status: string) {
     setUpdating(true)
@@ -121,6 +128,12 @@ export default function AppointmentsPage() {
           </select>
           {dateFilter && (
             <button onClick={() => setDate('')} style={{ padding:'0.5rem 0.7rem', background:'transparent', border:'1px solid #2a3045', borderRadius:6, color:'#7a8ba8', fontSize:'0.75rem', cursor:'pointer' }}>✕</button>
+          )}
+          {!dateFilter && (
+            <button onClick={() => setShowPast(p => !p)}
+              style={{ padding:'0.5rem 0.8rem', background: showPast ? 'rgba(232,184,109,0.15)' : 'transparent', border:`1px solid ${showPast ? 'rgba(232,184,109,0.4)' : '#2a3045'}`, borderRadius:6, color: showPast ? '#e8b86d' : '#7a8ba8', fontSize:'0.75rem', cursor:'pointer', whiteSpace:'nowrap' }}>
+              {showPast ? (lang==='zh' ? '隐藏历史' : 'Hide Past') : (lang==='zh' ? '查看历史' : 'Show Past')}
+            </button>
           )}
         </div>
 

@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
   const status      = searchParams.get('status')
   const therapistId = searchParams.get('therapistId')
   const date        = searchParams.get('date')
+  const from        = searchParams.get('from')  // show appointments on/after this date
 
   const where: any = {}
   if (status)      where.status      = status
@@ -25,6 +26,8 @@ export async function GET(req: NextRequest) {
       gte: new Date(d.setHours(0,0,0,0)),
       lte: new Date(new Date(date + 'T00:00:00').setHours(23,59,59,999)),
     }
+  } else if (from) {
+    where.appointmentAt = { gte: new Date(from + 'T00:00:00') }
   }
 
   // Therapists can only see their own appointments
