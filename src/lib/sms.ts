@@ -165,6 +165,7 @@ export async function verifyCode(
 interface BookingInfo {
   customerPhone: string; customerName: string; serviceName: string
   therapistName: string; appointmentAt: Date; manageToken: string
+  notes?: string | null
 }
 
 const MAPS_URL = 'https://maps.google.com/?q=120+Cambridge+St+STE+8+Burlington+MA+01803'
@@ -183,7 +184,7 @@ export async function sendBookingConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
     `[Carnation Spa] Booking confirmed!\nService: ${info.serviceName}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nDirections: ${MAPS_URL}\nManage: ${manageUrl(info.manageToken)}`)
   await sendSms(OWNER,
-    `[NEW BOOKING] ${info.customerName}\nService: ${info.serviceName}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nPhone: ${info.customerPhone}`)
+    `【新预约】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}${info.notes ? `\n备注：${info.notes}` : ''}`)
 }
 export async function sendReminder24h(info: BookingInfo) {
   await sendSms(info.customerPhone,
@@ -197,11 +198,11 @@ export async function sendRescheduleConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
     `[Carnation Spa] Your appointment has been rescheduled!\nService: ${info.serviceName}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
   await sendSms(OWNER,
-    `[RESCHEDULED] ${info.customerName}\nService: ${info.serviceName}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nPhone: ${info.customerPhone}`)
+    `【改期】${info.customerName}\n项目：${info.serviceName}\n新时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}`)
 }
 export async function sendCancellationNotice(info: BookingInfo) {
   await sendSms(info.customerPhone,
     `[Carnation Spa] Your booking on ${fmt(info.appointmentAt)} with ${info.therapistName} has been cancelled.\nBook again: ${process.env.NEXT_PUBLIC_APP_URL}`)
   await sendSms(OWNER,
-    `[CANCELLED] ${info.customerName}\nService: ${info.serviceName}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nPhone: ${info.customerPhone}`)
+    `【取消】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}`)
 }

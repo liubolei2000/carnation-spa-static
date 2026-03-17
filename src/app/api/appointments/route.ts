@@ -100,6 +100,7 @@ export async function POST(req: NextRequest) {
       therapistName: appt.therapist.name,
       appointmentAt: appt.appointmentAt,
       manageToken:   appt.manageToken,
+      notes,
     })
 
     return NextResponse.json({ ok: true, id: appt.id, token: appt.manageToken }, { status: 201 })
