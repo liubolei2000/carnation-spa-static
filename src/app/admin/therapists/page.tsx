@@ -9,7 +9,21 @@ interface Therapist {
   bufferMins: number; isActive: boolean; sortOrder: number
 }
 
+interface WorkHourDay {
+  dayOfWeek: number
+  isWorkday: boolean
+  openTime: string
+  closeTime: string
+}
+
 const EMOJIS = ['🧘‍♀️','🌸','💫','🌿','✨','💆']
+
+const DAY_ZH = ['周日','周一','周二','周三','周四','周五','周六']
+const DAY_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+
+const DEFAULT_HOURS: WorkHourDay[] = Array.from({ length: 7 }, (_, i) => ({
+  dayOfWeek: i, isWorkday: true, openTime: '09:00', closeTime: '21:00',
+}))
 
 export default function TherapistsPage() {
   const [list, setList]         = useState<Therapist[]>([])
@@ -22,11 +36,51 @@ export default function TherapistsPage() {
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
+  // Work hours modal state
+  const [hoursModal, setHoursModal]   = useState<{ therapist: Therapist; hours: WorkHourDay[] } | null>(null)
+  const [hoursSaving, setHoursSaving] = useState(false)
+  const [hoursLoading, setHoursLoading] = useState(false)
+
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
   useEffect(() => {
     fetch('/api/therapists?all=1').then(r => r.json()).then(d => { setList(Array.isArray(d)?d:[]); setLoading(false) })
   }, [])
+
+  async function openHoursModal(t: Therapist) {
+    setHoursLoading(true)
+    setHoursModal({ therapist: t, hours: DEFAULT_HOURS })
+    const res = await fetch(`/api/therapists/${t.id}/hours`)
+    if (res.ok) {
+      const data = await res.json()
+      setHoursModal({ therapist: t, hours: data })
+    }
+    setHoursLoading(false)
+  }
+
+  async function saveHours() {
+    if (!hoursModal) return
+    setHoursSaving(true)
+    const res = await fetch(`/api/therapists/${hoursModal.therapist.id}/hours`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(hoursModal.hours),
+    })
+    setHoursSaving(false)
+    if (res.ok) {
+      setHoursModal(null)
+      showToast(lang==='zh' ? '上班时间已保存 ✓' : 'Work hours saved ✓')
+    } else {
+      showToast(lang==='zh' ? '保存失败' : 'Save failed')
+    }
+  }
+
+  function updateHourDay(dow: number, patch: Partial<WorkHourDay>) {
+    setHoursModal(m => m ? {
+      ...m,
+      hours: m.hours.map(d => d.dayOfWeek === dow ? { ...d, ...patch } : d),
+    } : null)
+  }
 
   async function uploadAvatar(file: File) {
     setUploading(true)
@@ -96,7 +150,7 @@ export default function TherapistsPage() {
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.5rem', flexWrap:'wrap', gap:'0.75rem' }}>
         <div>
           <h1 style={{ fontSize:'1.3rem', fontWeight:600 }}>{lang==='zh'?'技师管理':'Therapists'}</h1>
-          <div style={{ fontSize:'0.82rem', color:'#7a8ba8', marginTop:'0.2rem' }}>{lang==='zh'?'管理技师档案与排班':'Manage therapist profiles'}</div>
+          <div style={{ fontSize:'0.82rem', color:'#7a8ba8', marginTop:'0.2rem' }}>{lang==='zh'?'管理技师档案与上班时间':'Manage therapist profiles & work hours'}</div>
         </div>
         <div style={{ display:'flex', gap:'0.5rem', alignItems:'center' }}>
           <div style={{ display:'flex', gap:'0.3rem' }}>
@@ -140,9 +194,12 @@ export default function TherapistsPage() {
                   </a>
                 )}
               </div>
-              <div style={{ display:'flex', gap:'0.5rem' }}>
+              <div style={{ display:'flex', gap:'0.5rem', flexWrap:'wrap' }}>
                 <button onClick={() => setModal(t)} style={{ flex:1, padding:'0.4rem', background:'transparent', border:'1px solid #2a3045', borderRadius:5, color:'#7a8ba8', fontSize:'0.75rem', cursor:'pointer' }}>
                   {lang==='zh'?'编辑档案':'Edit'}
+                </button>
+                <button onClick={() => openHoursModal(t)} style={{ flex:1, padding:'0.4rem', background:'transparent', border:'1px solid rgba(232,184,109,0.35)', borderRadius:5, color:'#e8b86d', fontSize:'0.75rem', cursor:'pointer' }}>
+                  {lang==='zh'?'上班时间':'Hours'}
                 </button>
                 <button onClick={() => toggleActive(t)} style={{ flex:1, padding:'0.4rem', background:'transparent', border:`1px solid ${t.isActive?'rgba(248,113,113,0.3)':'rgba(109,191,142,0.3)'}`, borderRadius:5, color: t.isActive?'#f87171':'#6dbf8e', fontSize:'0.75rem', cursor:'pointer' }}>
                   {t.isActive ? (lang==='zh'?'停用':'Disable') : (lang==='zh'?'启用':'Enable')}
@@ -154,6 +211,7 @@ export default function TherapistsPage() {
         ))}
       </div>
 
+      {/* ── Edit Profile Modal ── */}
       {modal && (
         <div onClick={() => setModal(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(4px)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div onClick={e => e.stopPropagation()} style={{ background:'#161b27', border:'1px solid #2a3045', borderRadius:12, width:'min(480px,94vw)', maxHeight:'90vh', overflow:'auto', boxShadow:'0 4px 24px rgba(0,0,0,0.4)' }}>
@@ -237,6 +295,90 @@ export default function TherapistsPage() {
         </div>
       )}
 
+      {/* ── Work Hours Modal ── */}
+      {hoursModal && (
+        <div onClick={() => setHoursModal(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(4px)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background:'#161b27', border:'1px solid #2a3045', borderRadius:12, width:'min(480px,94vw)', maxHeight:'90vh', overflow:'auto', boxShadow:'0 4px 24px rgba(0,0,0,0.4)' }}>
+            <div style={{ padding:'1.2rem 1.4rem', borderBottom:'1px solid #2a3045', display:'flex', justifyContent:'space-between', alignItems:'center', position:'sticky', top:0, background:'#161b27' }}>
+              <div>
+                <span style={{ fontWeight:600 }}>{lang==='zh'?'上班时间':'Work Hours'}</span>
+                <span style={{ fontSize:'0.78rem', color:'#7a8ba8', marginLeft:'0.6rem' }}>{hoursModal.therapist.name}</span>
+              </div>
+              <button onClick={() => setHoursModal(null)} style={{ width:28, height:28, borderRadius:'50%', background:'#1c2333', border:'1px solid #2a3045', color:'#7a8ba8', cursor:'pointer' }}>✕</button>
+            </div>
+
+            <div style={{ padding:'1.4rem', display:'flex', flexDirection:'column', gap:'0.6rem' }}>
+              {hoursLoading ? (
+                <div style={{ textAlign:'center', color:'#7a8ba8', padding:'2rem' }}>{lang==='zh'?'加载中…':'Loading…'}</div>
+              ) : (
+                <>
+                  {/* Header row */}
+                  <div style={{ display:'grid', gridTemplateColumns:'3rem 1fr 6rem 6rem', gap:'0.5rem', alignItems:'center', padding:'0 0.2rem', marginBottom:'0.2rem' }}>
+                    <div />
+                    <div style={{ fontSize:'0.68rem', color:'#7a8ba8', textTransform:'uppercase', letterSpacing:'0.05em' }}>{lang==='zh'?'星期':'Day'}</div>
+                    <div style={{ fontSize:'0.68rem', color:'#7a8ba8', textTransform:'uppercase', letterSpacing:'0.05em', textAlign:'center' }}>{lang==='zh'?'上班':'Open'}</div>
+                    <div style={{ fontSize:'0.68rem', color:'#7a8ba8', textTransform:'uppercase', letterSpacing:'0.05em', textAlign:'center' }}>{lang==='zh'?'下班':'Close'}</div>
+                  </div>
+
+                  {hoursModal.hours.map(day => (
+                    <div key={day.dayOfWeek} style={{ display:'grid', gridTemplateColumns:'3rem 1fr 6rem 6rem', gap:'0.5rem', alignItems:'center', padding:'0.5rem 0.4rem', borderRadius:6, background: day.isWorkday ? '#1c2333' : 'rgba(248,113,113,0.04)', border:`1px solid ${day.isWorkday ? '#2a3045' : 'rgba(248,113,113,0.15)'}` }}>
+                      {/* Toggle */}
+                      <div style={{ display:'flex', justifyContent:'center' }}>
+                        <button
+                          onClick={() => updateHourDay(day.dayOfWeek, { isWorkday: !day.isWorkday })}
+                          style={{ width:36, height:20, borderRadius:10, border:'none', cursor:'pointer', background: day.isWorkday ? '#6dbf8e' : '#374151', position:'relative', transition:'background 0.2s', flexShrink:0 }}
+                        >
+                          <span style={{ position:'absolute', top:2, left: day.isWorkday ? 18 : 2, width:16, height:16, borderRadius:'50%', background:'#fff', transition:'left 0.2s' }} />
+                        </button>
+                      </div>
+
+                      {/* Day name */}
+                      <div style={{ fontSize:'0.85rem', color: day.isWorkday ? '#e2e8f0' : '#7a8ba8', fontWeight: day.isWorkday ? 500 : 400 }}>
+                        {lang==='zh' ? DAY_ZH[day.dayOfWeek] : DAY_EN[day.dayOfWeek]}
+                        {!day.isWorkday && <span style={{ fontSize:'0.7rem', marginLeft:'0.4rem', color:'#f87171' }}>{lang==='zh'?'休息':'Off'}</span>}
+                      </div>
+
+                      {/* Open time */}
+                      <input
+                        type="time"
+                        value={day.openTime}
+                        disabled={!day.isWorkday}
+                        onChange={e => updateHourDay(day.dayOfWeek, { openTime: e.target.value })}
+                        style={{ padding:'0.3rem 0.4rem', background:'#0f1117', border:'1px solid #2a3045', borderRadius:4, color: day.isWorkday ? '#e2e8f0' : '#374151', fontSize:'0.82rem', outline:'none', width:'100%', cursor: day.isWorkday ? 'text' : 'not-allowed' }}
+                      />
+
+                      {/* Close time */}
+                      <input
+                        type="time"
+                        value={day.closeTime}
+                        disabled={!day.isWorkday}
+                        onChange={e => updateHourDay(day.dayOfWeek, { closeTime: e.target.value })}
+                        style={{ padding:'0.3rem 0.4rem', background:'#0f1117', border:'1px solid #2a3045', borderRadius:4, color: day.isWorkday ? '#e2e8f0' : '#374151', fontSize:'0.82rem', outline:'none', width:'100%', cursor: day.isWorkday ? 'text' : 'not-allowed' }}
+                      />
+                    </div>
+                  ))}
+
+                  <div style={{ fontSize:'0.72rem', color:'#7a8ba8', marginTop:'0.4rem' }}>
+                    {lang==='zh'
+                      ? '时间为店铺本地时间（America/New_York）。未开班的时段顾客无法预约。'
+                      : 'Times are in store local time (America/New_York). Slots outside work hours will be unavailable to customers.'
+                    }
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div style={{ padding:'1rem 1.4rem', borderTop:'1px solid #2a3045', display:'flex', gap:'0.6rem', justifyContent:'flex-end' }}>
+              <button onClick={() => setHoursModal(null)} style={{ padding:'0.6rem 1.2rem', background:'transparent', border:'1px solid #2a3045', borderRadius:6, color:'#7a8ba8', fontSize:'0.83rem', cursor:'pointer' }}>{lang==='zh'?'取消':'Cancel'}</button>
+              <button onClick={saveHours} disabled={hoursSaving || hoursLoading} style={{ padding:'0.6rem 1.4rem', background:'linear-gradient(135deg,#e8b86d,#c49540)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.83rem', fontWeight:600, cursor:'pointer', opacity:(hoursSaving||hoursLoading)?0.7:1 }}>
+                {hoursSaving ? (lang==='zh'?'保存中…':'Saving…') : (lang==='zh'?'确认保存':'Save')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Confirm ── */}
       {deleting && (() => {
         const t = list.find(x => x.id === deleting)!
         return (

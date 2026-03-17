@@ -92,11 +92,29 @@ model Therapist {
 
   account      Account?
   appointments Appointment[]
+  workHours    TherapistWorkHours[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([isActive])
+}
+
+// ─────────────────────────────────────────
+// THERAPIST WORK HOURS (per day of week)
+// ─────────────────────────────────────────
+
+model TherapistWorkHours {
+  id          String    @id @default(cuid())
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int       // 0=Sunday, 1=Monday ... 6=Saturday
+  isWorkday   Boolean   @default(true)
+  openTime    String    @default("09:00")  // "HH:MM" local time
+  closeTime   String    @default("21:00")  // "HH:MM" local time
+
+  @@unique([therapistId, dayOfWeek])
+  @@index([therapistId])
 }
 
 // ─────────────────────────────────────────

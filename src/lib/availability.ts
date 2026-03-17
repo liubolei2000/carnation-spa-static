@@ -27,9 +27,35 @@ export interface AvailabilityResult {
 // Constants
 // ─────────────────────────────────────────
 
-const BUSINESS_START = 9   // 9:00 AM
-const BUSINESS_END   = 21  // 9:00 PM
+const BUSINESS_START = 9   // 9:00 AM  (fallback when no work hours set)
+const BUSINESS_END   = 21  // 9:00 PM  (fallback)
 const SLOT_INTERVAL  = 30  // minutes between slots
+
+// ─────────────────────────────────────────
+// Fetch therapist work hours for a given day of week
+// Returns { start, end } in hours (as numbers) or null if day off
+// ─────────────────────────────────────────
+
+async function getTherapistHours(
+  therapistId: string,
+  date: Date
+): Promise<{ start: number; startMin: number; end: number; endMin: number } | null> {
+  const dow = date.getDay()  // 0=Sun … 6=Sat
+  const row = await prisma.therapistWorkHours.findUnique({
+    where: { therapistId_dayOfWeek: { therapistId, dayOfWeek: dow } },
+    select: { isWorkday: true, openTime: true, closeTime: true },
+  })
+
+  // No row → use global defaults (treat as workday 9-21)
+  if (!row) {
+    return { start: BUSINESS_START, startMin: 0, end: BUSINESS_END, endMin: 0 }
+  }
+  if (!row.isWorkday) return null  // day off
+
+  const [startH, startM] = row.openTime.split(':').map(Number)
+  const [endH,   endM  ] = row.closeTime.split(':').map(Number)
+  return { start: startH, startMin: startM, end: endH, endMin: endM }
+}
 
 // ─────────────────────────────────────────
 // Core conflict check
@@ -108,6 +134,9 @@ export async function getAvailableSlots(
   })
   const buffer = therapist?.bufferMins ?? 15
 
+  // Get therapist's work hours for this day
+  const hours = await getTherapistHours(therapistId, date)
+
   // Fetch existing appointments for the day
   const dayStart = new Date(date)
   dayStart.setHours(0, 0, 0, 0)
@@ -126,67 +155,69 @@ export async function getAvailableSlots(
 
   const slots: TimeSlot[] = []
 
-  // Iterate each 30-min slot from 09:00 to 21:00
-  for (let hour = BUSINESS_START; hour < BUSINESS_END; hour++) {
-    for (let min = 0; min < 60; min += SLOT_INTERVAL) {
-      const slotStart = new Date(date)
-      slotStart.setHours(hour, min, 0, 0)
+  // Determine slot range
+  const rangeStart = hours ? hours.start * 60 + hours.startMin : BUSINESS_START * 60
+  const rangeEnd   = hours ? hours.end   * 60 + hours.endMin   : BUSINESS_END   * 60
 
-      const slotEnd = new Date(slotStart.getTime() + durationMins * 60_000)
+  // Iterate each 30-min slot within the day
+  for (let totalMin = rangeStart; totalMin < rangeEnd; totalMin += SLOT_INTERVAL) {
+    const hour = Math.floor(totalMin / 60)
+    const min  = totalMin % 60
 
-      // Skip slots that are already in the past
-      const now = new Date()
-      if (slotStart <= now) {
-        slots.push({
-          time:      formatTime(hour, min),
-          available: false,
-          reason:    'outside_hours',
-        })
-        continue
-      }
+    const slotStart = new Date(date)
+    slotStart.setHours(hour, min, 0, 0)
 
-      // Check if session would end after business hours
-      const businessClose = new Date(date)
-      businessClose.setHours(BUSINESS_END, 0, 0, 0)
+    const slotEnd = new Date(slotStart.getTime() + durationMins * 60_000)
 
-      if (slotEnd > businessClose) {
-        slots.push({
-          time:      formatTime(hour, min),
-          available: false,
-          reason:    'outside_hours',
-        })
-        continue
-      }
-
-      // Check for conflicts
-      let conflict = false
-      let reason: TimeSlot['reason'] = 'booked'
-
-      for (const appt of existing) {
-        const existStart = appt.appointmentAt
-        const existEnd   = appt.endsAt
-
-        const slotEndWithBuffer   = new Date(slotEnd.getTime()   + buffer * 60_000)
-        const existEndWithBuffer  = new Date(existEnd.getTime()  + buffer * 60_000)
-
-        if (existStart < slotEndWithBuffer && existEndWithBuffer > slotStart) {
-          conflict = true
-          // Determine if this slot is in the buffer zone or actually booked
-          if (existStart <= slotStart && slotStart < existEnd) {
-            reason = 'booked'
-          } else {
-            reason = 'buffer'
-          }
-          break
-        }
-      }
-
-      slots.push({
-        time:      formatTime(hour, min),
-        available: !conflict,
-        reason:    conflict ? reason : undefined,
-      })
+    // Day off — mark all as outside_hours
+    if (!hours) {
+      slots.push({ time: formatTime(hour, min), available: false, reason: 'outside_hours' })
+      continue
     }
+
+    // Skip slots that are already in the past
+    const now = new Date()
+    if (slotStart <= now) {
+      slots.push({ time: formatTime(hour, min), available: false, reason: 'outside_hours' })
+      continue
+    }
+
+    // Check if session would end after work hours
+    const workClose = new Date(date)
+    workClose.setHours(hours.end, hours.endMin, 0, 0)
+
+    if (slotEnd > workClose) {
+      slots.push({ time: formatTime(hour, min), available: false, reason: 'outside_hours' })
+      continue
+    }
+
+    // Check for conflicts
+    let conflict = false
+    let reason: TimeSlot['reason'] = 'booked'
+
+    for (const appt of existing) {
+      const existStart = appt.appointmentAt
+      const existEnd   = appt.endsAt
+
+      const slotEndWithBuffer   = new Date(slotEnd.getTime()   + buffer * 60_000)
+      const existEndWithBuffer  = new Date(existEnd.getTime()  + buffer * 60_000)
+
+      if (existStart < slotEndWithBuffer && existEndWithBuffer > slotStart) {
+        conflict = true
+        if (existStart <= slotStart && slotStart < existEnd) {
+          reason = 'booked'
+        } else {
+          reason = 'buffer'
+        }
+        break
+      }
+    }
+
+    slots.push({
+      time:      formatTime(hour, min),
+      available: !conflict,
+      reason:    conflict ? reason : undefined,
+    })
   }
 
   return slots
@@ -272,10 +303,14 @@ export async function createAppointmentSafe(params: {
       }
     }
 
-    // Business hours check
-    const businessClose = new Date(params.appointmentAt)
-    businessClose.setHours(21, 0, 0, 0)
-    if (newEnd > businessClose) {
+    // Work hours check (per therapist, falls back to global 9-21)
+    const hours = await getTherapistHours(params.therapistId, params.appointmentAt)
+    if (!hours) throw new Error('OUTSIDE_BUSINESS_HOURS')
+    const workClose = new Date(params.appointmentAt)
+    workClose.setHours(hours.end, hours.endMin, 0, 0)
+    const workOpen = new Date(params.appointmentAt)
+    workOpen.setHours(hours.start, hours.startMin, 0, 0)
+    if (params.appointmentAt < workOpen || newEnd > workClose) {
       throw new Error('OUTSIDE_BUSINESS_HOURS')
     }
 
