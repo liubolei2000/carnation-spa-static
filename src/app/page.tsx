@@ -52,18 +52,20 @@ export default function HomePage() {
   const hotStone     = services.find(s => s.name.toLowerCase().includes('hot stone'))
   const mainServices = services.filter(s => !s.name.toLowerCase().includes('hot stone'))
 
-  // Group by name, keep lowest price per group for display cards
-  const displayServices = Object.values(
+  // Group by name for display cards
+  type ServiceGroup = { rep: Service; variants: Service[]; minPrice: number }
+  const displayGroups: ServiceGroup[] = Object.values(
     mainServices.reduce((acc, svc) => {
       const key = svc.name.toLowerCase().trim()
-      if (!acc[key] || Number(svc.price) < Number(acc[key].minPrice)) {
-        acc[key] = { ...svc, minPrice: Number(svc.price), hasVariants: (acc[key]?.hasVariants ?? false) || !!acc[key] }
-      } else {
-        acc[key].hasVariants = true
-      }
+      if (!acc[key]) acc[key] = { rep: svc, variants: [], minPrice: Number(svc.price) }
+      acc[key].variants.push(svc)
+      if (Number(svc.price) < acc[key].minPrice) { acc[key].minPrice = Number(svc.price); acc[key].rep = svc }
       return acc
-    }, {} as Record<string, Service & { minPrice: number; hasVariants: boolean }>)
-  )
+    }, {} as Record<string, ServiceGroup>)
+  ).map(g => ({ ...g, variants: g.variants.sort((a, b) => a.durationMin - b.durationMin) }))
+
+  // Duration picker overlay state
+  const [durationPicker, setDurationPicker] = useState<ServiceGroup | null>(null)
   const timerRef      = useRef<ReturnType<typeof setTimeout>>()
   const tsContainer   = useRef<HTMLDivElement>(null)
   const tsWidgetId    = useRef<string | null>(null)
@@ -328,37 +330,29 @@ export default function HomePage() {
                 <div style={{ height:16,background:'#e8ddd0',borderRadius:2,marginBottom:'0.5rem',width:'70%' }} />
               </div>
             </div>
-          )) : [...displayServices, ...(hotStone ? [{ ...hotStone, minPrice: 0, hasVariants: false }] : [])].map((svc,i)=>{
+          )) : [...displayGroups, ...(hotStone ? [{ rep: hotStone, variants: [hotStone], minPrice: 0 }] : [])].map((group)=>{
+            const svc = group.rep
             const hovered = hoveredSvc === svc.id
             const isHotStone = svc.name.toLowerCase().includes('hot stone')
-            const hasVariants = !isHotStone && (svc as any).hasVariants
+            const hasVariants = !isHotStone && group.variants.length > 1
             return (
               <div key={svc.id}
                 onClick={()=>{
-                  if (isHotStone) {
-                    setAddHotStone(true)
-                    openDrawer()
-                  } else if (hasVariants) {
-                    openDrawer()
-                  } else {
-                    setSelService(svc)
-                    openDrawer()
-                  }
+                  if (isHotStone) { setAddHotStone(true); openDrawer() }
+                  else if (hasVariants) { setDurationPicker(group) }
+                  else { setSelService(svc); openDrawer() }
                 }}
                 onMouseEnter={()=>setHoveredSvc(svc.id)}
                 onMouseLeave={()=>setHoveredSvc(null)}
                 style={{ borderRadius:4,overflow:'hidden',cursor:'pointer',position:'relative',background:'#2d2318',boxShadow:hovered?'0 12px 40px rgba(28,23,18,0.18)':'0 2px 12px rgba(28,23,18,0.08)',transform:hovered?'translateY(-4px)':'translateY(0)',transition:'all 0.35s cubic-bezier(0.16,1,0.3,1)' }}>
-                {/* Image */}
                 {svc.imageUrl && (
                 <div style={{ height:220,overflow:'hidden',position:'relative' }}>
                   <img src={svc.imageUrl} alt={svc.name} style={{ width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.55s ease',transform:hovered?'scale(1.06)':'scale(1)' }} />
-                  {/* Hot Stone: add-on badge */}
                   {isHotStone && (
                     <div style={{ position:'absolute',top:12,left:12,background:'rgba(201,169,110,0.92)',backdropFilter:'blur(4px)',borderRadius:2,padding:'0.2rem 0.6rem',fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'#1c1712',fontWeight:600 }}>
                       Add-on · Complimentary
                     </div>
                   )}
-                  {/* Hover overlay with description */}
                   <div style={{ position:'absolute',inset:0,background:'linear-gradient(to top,rgba(28,23,18,0.93) 0%,rgba(28,23,18,0.45) 60%,transparent 100%)',display:'flex',alignItems:'flex-end',padding:'1.2rem',opacity:hovered?1:0,transition:'opacity 0.3s' }}>
                     {hovered && (
                       <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'0.85rem',lineHeight:1.75,color:'rgba(250,246,240,0.9)',margin:0,animation:'overlayUp 0.3s both' }}>
@@ -368,15 +362,28 @@ export default function HomePage() {
                   </div>
                 </div>
                 )}
-                {/* Card footer */}
-                <div style={{ padding:'1rem 1.2rem',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
-                  <div>
-                    <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#faf6f0',lineHeight:1.2,marginBottom:'0.15rem' }}>{svc.name}</div>
-                    <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.1em',color:'#a8927a',textTransform:'uppercase' }}>{isHotStone ? 'Pairs with any service' : hasVariants ? 'Multiple durations' : svc.durationMin>0?`${svc.durationMin} min`:'—'}</div>
+                <div style={{ padding:'1rem 1.2rem' }}>
+                  <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom: hasVariants?'0.7rem':0 }}>
+                    <div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#faf6f0',lineHeight:1.2,marginBottom:'0.15rem' }}>{svc.name}</div>
+                      <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.1em',color:'#a8927a',textTransform:'uppercase' }}>
+                        {isHotStone ? 'Pairs with any service' : hasVariants ? 'Select duration below' : svc.durationMin>0?`${svc.durationMin} min`:'—'}
+                      </div>
+                    </div>
+                    <span style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.4rem',fontWeight:300,color:isHotStone?'#7d8c72':'#c9a96e',flexShrink:0 }}>
+                      {isHotStone ? 'Free' : hasVariants ? `From $${group.minPrice.toFixed(0)}` : `$${Number(svc.price).toFixed(0)}`}
+                    </span>
                   </div>
-                  <span style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.4rem',fontWeight:300,color:isHotStone?'#7d8c72':'#c9a96e',flexShrink:0 }}>
-                    {isHotStone ? 'Free' : hasVariants ? `From $${(svc as any).minPrice.toFixed(0)}` : `$${Number(svc.price).toFixed(0)}`}
-                  </span>
+                  {/* Duration chips */}
+                  {hasVariants && (
+                    <div style={{ display:'flex',gap:'0.4rem',flexWrap:'wrap' }}>
+                      {group.variants.map(v => (
+                        <span key={v.id} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',letterSpacing:'0.08em',padding:'0.2rem 0.55rem',border:'1px solid rgba(200,180,154,0.35)',borderRadius:2,color:'#c8b49a' }}>
+                          {v.durationMin} min · ${Number(v.price).toFixed(0)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -528,6 +535,34 @@ export default function HomePage() {
           </span>
         </div>
       </footer>
+
+      {/* DURATION PICKER */}
+      {durationPicker && (
+        <div onClick={()=>setDurationPicker(null)} style={{ position:'fixed',inset:0,zIndex:600,background:'rgba(28,23,18,0.7)',backdropFilter:'blur(6px)',display:'flex',alignItems:'center',justifyContent:'center',padding:'1rem' }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:'#faf6f0',borderRadius:6,width:'min(420px,100%)',boxShadow:'0 20px 60px rgba(28,23,18,0.3)',overflow:'hidden' }}>
+            {/* Header */}
+            <div style={{ padding:'1.4rem 1.6rem 1rem',borderBottom:'1px solid #e8ddd0',display:'flex',justifyContent:'space-between',alignItems:'flex-start' }}>
+              <div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,color:'#2d2318',lineHeight:1.2 }}>{durationPicker.rep.name}</div>
+                <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#a8927a',marginTop:'0.3rem' }}>Select duration</div>
+              </div>
+              <button onClick={()=>setDurationPicker(null)} style={{ width:30,height:30,borderRadius:'50%',background:'#f4ede3',border:'none',color:'#a8927a',fontSize:'1rem',cursor:'pointer',flexShrink:0 }}>✕</button>
+            </div>
+            {/* Options */}
+            <div style={{ padding:'1rem 1.6rem 1.4rem',display:'flex',flexDirection:'column',gap:'0.6rem' }}>
+              {durationPicker.variants.map(v=>(
+                <button key={v.id} onClick={()=>{ setSelService(v); setDurationPicker(null); openDrawer() }}
+                  style={{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'1rem 1.2rem',background:'white',border:'1.5px solid #e8ddd0',borderRadius:3,cursor:'pointer',transition:'all 0.2s',textAlign:'left' }}
+                  onMouseEnter={e=>{ e.currentTarget.style.borderColor='#6b4f35'; e.currentTarget.style.background='#fdf8f2' }}
+                  onMouseLeave={e=>{ e.currentTarget.style.borderColor='#e8ddd0'; e.currentTarget.style.background='white' }}>
+                  <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'#2d2318' }}>{v.durationMin} min</div>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.35rem',fontWeight:300,color:'#6b4f35' }}>${Number(v.price).toFixed(0)}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* DRAWER OVERLAY */}
       <div onClick={closeDrawer} style={{ position:'fixed',inset:0,zIndex:500,background:open?'rgba(28,23,18,0.6)':'rgba(28,23,18,0)',backdropFilter:open?'blur(4px)':'none',pointerEvents:open?'all':'none',transition:'background 0.45s,backdrop-filter 0.45s' }} />
