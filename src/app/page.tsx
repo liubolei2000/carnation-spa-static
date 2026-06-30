@@ -49,8 +49,21 @@ export default function HomePage() {
   const [hoveredSvc, setHoveredSvc]   = useState<string|null>(null)
   const [navOpen, setNavOpen]         = useState(false)
 
-  const hotStone    = services.find(s => s.name.toLowerCase().includes('hot stone'))
+  const hotStone     = services.find(s => s.name.toLowerCase().includes('hot stone'))
   const mainServices = services.filter(s => !s.name.toLowerCase().includes('hot stone'))
+
+  // Group by name, keep lowest price per group for display cards
+  const displayServices = Object.values(
+    mainServices.reduce((acc, svc) => {
+      const key = svc.name.toLowerCase().trim()
+      if (!acc[key] || Number(svc.price) < Number(acc[key].minPrice)) {
+        acc[key] = { ...svc, minPrice: Number(svc.price), hasVariants: (acc[key]?.hasVariants ?? false) || !!acc[key] }
+      } else {
+        acc[key].hasVariants = true
+      }
+      return acc
+    }, {} as Record<string, Service & { minPrice: number; hasVariants: boolean }>)
+  )
   const timerRef      = useRef<ReturnType<typeof setTimeout>>()
   const tsContainer   = useRef<HTMLDivElement>(null)
   const tsWidgetId    = useRef<string | null>(null)
@@ -315,14 +328,17 @@ export default function HomePage() {
                 <div style={{ height:16,background:'#e8ddd0',borderRadius:2,marginBottom:'0.5rem',width:'70%' }} />
               </div>
             </div>
-          )) : services.map((svc,i)=>{
+          )) : [...displayServices, ...(hotStone ? [{ ...hotStone, minPrice: 0, hasVariants: false }] : [])].map((svc,i)=>{
             const hovered = hoveredSvc === svc.id
             const isHotStone = svc.name.toLowerCase().includes('hot stone')
+            const hasVariants = !isHotStone && (svc as any).hasVariants
             return (
               <div key={svc.id}
                 onClick={()=>{
                   if (isHotStone) {
                     setAddHotStone(true)
+                    openDrawer()
+                  } else if (hasVariants) {
                     openDrawer()
                   } else {
                     setSelService(svc)
@@ -356,10 +372,10 @@ export default function HomePage() {
                 <div style={{ padding:'1rem 1.2rem',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
                   <div>
                     <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#faf6f0',lineHeight:1.2,marginBottom:'0.15rem' }}>{svc.name}</div>
-                    <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.1em',color:'#a8927a',textTransform:'uppercase' }}>{isHotStone ? 'Pairs with any service' : svc.durationMin>0?`${svc.durationMin} min`:'—'}</div>
+                    <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.1em',color:'#a8927a',textTransform:'uppercase' }}>{isHotStone ? 'Pairs with any service' : hasVariants ? 'Multiple durations' : svc.durationMin>0?`${svc.durationMin} min`:'—'}</div>
                   </div>
                   <span style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.4rem',fontWeight:300,color:isHotStone?'#7d8c72':'#c9a96e',flexShrink:0 }}>
-                    {isHotStone ? 'Free' : `$${Number(svc.price).toFixed(0)}`}
+                    {isHotStone ? 'Free' : hasVariants ? `From $${(svc as any).minPrice.toFixed(0)}` : `$${Number(svc.price).toFixed(0)}`}
                   </span>
                 </div>
               </div>
