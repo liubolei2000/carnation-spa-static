@@ -64,8 +64,8 @@ export default function HomePage() {
     }, {} as Record<string, ServiceGroup>)
   ).map(g => ({ ...g, variants: g.variants.sort((a, b) => a.durationMin - b.durationMin) }))
 
-  // Duration picker overlay state
-  const [durationPicker, setDurationPicker] = useState<ServiceGroup | null>(null)
+  // Which group was clicked — drives duration selection inside the drawer
+  const [pendingGroup, setPendingGroup] = useState<ServiceGroup | null>(null)
   const timerRef      = useRef<ReturnType<typeof setTimeout>>()
   const tsContainer   = useRef<HTMLDivElement>(null)
   const tsWidgetId    = useRef<string | null>(null)
@@ -142,7 +142,7 @@ export default function HomePage() {
   function openDrawer()  { setOpen(true);  document.body.style.overflow='hidden' }
   function closeDrawer() { setOpen(false); document.body.style.overflow=''; resetBooking() }
   function resetBooking() {
-    setStep(1); setSelService(null); setSelDate(''); setSelTherapist('')
+    setStep(1); setSelService(null); setPendingGroup(null); setSelDate(''); setSelTherapist('')
     setSelTime(''); setAvail([]); setName(''); setPhone(''); setNotes('')
     setCode(''); setCodeSent(false); setError(''); setSendingCode(false); setCodeTimer(0)
     setAddHotStone(false)
@@ -339,7 +339,7 @@ export default function HomePage() {
               <div key={svc.id}
                 onClick={()=>{
                   if (isHotStone) { setAddHotStone(true); openDrawer() }
-                  else if (hasVariants) { setDurationPicker(group) }
+                  else if (hasVariants) { setPendingGroup(group); openDrawer() }
                   else { setSelService(svc); openDrawer() }
                 }}
                 onMouseEnter={()=>setHoveredSvc(svc.id)}
@@ -536,34 +536,6 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* DURATION PICKER */}
-      {durationPicker && (
-        <div onClick={()=>setDurationPicker(null)} style={{ position:'fixed',inset:0,zIndex:600,background:'rgba(28,23,18,0.7)',backdropFilter:'blur(6px)',display:'flex',alignItems:'center',justifyContent:'center',padding:'1rem' }}>
-          <div onClick={e=>e.stopPropagation()} style={{ background:'#faf6f0',borderRadius:6,width:'min(420px,100%)',boxShadow:'0 20px 60px rgba(28,23,18,0.3)',overflow:'hidden' }}>
-            {/* Header */}
-            <div style={{ padding:'1.4rem 1.6rem 1rem',borderBottom:'1px solid #e8ddd0',display:'flex',justifyContent:'space-between',alignItems:'flex-start' }}>
-              <div>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,color:'#2d2318',lineHeight:1.2 }}>{durationPicker.rep.name}</div>
-                <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#a8927a',marginTop:'0.3rem' }}>Select duration</div>
-              </div>
-              <button onClick={()=>setDurationPicker(null)} style={{ width:30,height:30,borderRadius:'50%',background:'#f4ede3',border:'none',color:'#a8927a',fontSize:'1rem',cursor:'pointer',flexShrink:0 }}>✕</button>
-            </div>
-            {/* Options */}
-            <div style={{ padding:'1rem 1.6rem 1.4rem',display:'flex',flexDirection:'column',gap:'0.6rem' }}>
-              {durationPicker.variants.map(v=>(
-                <button key={v.id} onClick={()=>{ setSelService(v); setDurationPicker(null); openDrawer() }}
-                  style={{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'1rem 1.2rem',background:'white',border:'1.5px solid #e8ddd0',borderRadius:3,cursor:'pointer',transition:'all 0.2s',textAlign:'left' }}
-                  onMouseEnter={e=>{ e.currentTarget.style.borderColor='#6b4f35'; e.currentTarget.style.background='#fdf8f2' }}
-                  onMouseLeave={e=>{ e.currentTarget.style.borderColor='#e8ddd0'; e.currentTarget.style.background='white' }}>
-                  <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'#2d2318' }}>{v.durationMin} min</div>
-                  <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.35rem',fontWeight:300,color:'#6b4f35' }}>${Number(v.price).toFixed(0)}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* DRAWER OVERLAY */}
       <div onClick={closeDrawer} style={{ position:'fixed',inset:0,zIndex:500,background:open?'rgba(28,23,18,0.6)':'rgba(28,23,18,0)',backdropFilter:open?'blur(4px)':'none',pointerEvents:open?'all':'none',transition:'background 0.45s,backdrop-filter 0.45s' }} />
 
@@ -604,24 +576,58 @@ export default function HomePage() {
           {/* Step 1 */}
           {step===1&&(
             <div>
-              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'#a8927a',marginBottom:'1rem' }}>Choose a service</div>
-              <div style={{ display:'flex',flexDirection:'column',gap:'0.75rem' }}>
-                {mainServices.map((svc,i)=>(
-                  <div key={svc.id} onClick={()=>setSelService(svc)}
-                    style={{ padding:'1.2rem 1.3rem',border:`1.5px solid ${selService?.id===svc.id?'#6b4f35':'#e8ddd0'}`,borderRadius:2,cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center',background:selService?.id===svc.id?'#f4ede3':'white',boxShadow:selService?.id===svc.id?'0 0 0 3px rgba(107,79,53,0.08)':'none',transition:'all 0.25s' }}>
-                    <div style={{ display:'flex',alignItems:'center',gap:'1rem' }}>
-                      {svc.imageUrl && <img src={svc.imageUrl} alt={svc.name} style={{ width:40,height:40,objectFit:'cover',borderRadius:4,flexShrink:0 }} />}
-                      <div>
-                        <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.15rem',fontWeight:400,color:'#2d2318' }}>{svc.name}</div>
-                        <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',color:'#a8927a',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:'0.2rem' }}>{svc.durationMin>0?`${svc.durationMin} min`:'—'}</div>
-                      </div>
+              {pendingGroup ? (
+                /* ── Duration selection for a specific service ── */
+                <>
+                  <button onClick={()=>{ setPendingGroup(null); setSelService(null) }}
+                    style={{ display:'flex',alignItems:'center',gap:'0.4rem',fontFamily:"'DM Mono',monospace",fontSize:'0.7rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#a8927a',background:'none',border:'none',cursor:'pointer',marginBottom:'1.2rem',padding:0 }}>
+                    ← All services
+                  </button>
+                  <div style={{ display:'flex',alignItems:'center',gap:'0.8rem',marginBottom:'1.2rem' }}>
+                    {pendingGroup.rep.imageUrl && <img src={pendingGroup.rep.imageUrl} alt={pendingGroup.rep.name} style={{ width:44,height:44,objectFit:'cover',borderRadius:4,flexShrink:0 }} />}
+                    <div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#2d2318' }}>{pendingGroup.rep.name}</div>
+                      <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',color:'#a8927a',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:'0.15rem' }}>Choose duration</div>
                     </div>
-                    <span style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:300,color:'#6b4f35',flexShrink:0 }}>
-                      {Number(svc.price)===0?'Free':`$${Number(svc.price).toFixed(0)}`}
-                    </span>
                   </div>
-                ))}
-              </div>
+                  <div style={{ display:'flex',flexDirection:'column',gap:'0.6rem' }}>
+                    {pendingGroup.variants.map(v=>(
+                      <div key={v.id} onClick={()=>{ setSelService(v); setPendingGroup(null) }}
+                        style={{ padding:'1.1rem 1.3rem',border:`1.5px solid ${selService?.id===v.id?'#6b4f35':'#e8ddd0'}`,borderRadius:2,cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center',background:selService?.id===v.id?'#f4ede3':'white',transition:'all 0.2s' }}>
+                        <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'#2d2318' }}>{v.durationMin} min</div>
+                        <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:300,color:'#6b4f35' }}>${Number(v.price).toFixed(0)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                /* ── Full service list ── */
+                <>
+                  <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'#a8927a',marginBottom:'1rem' }}>Choose a service</div>
+                  <div style={{ display:'flex',flexDirection:'column',gap:'0.75rem' }}>
+                    {displayGroups.map(group=>(
+                      <div key={group.rep.id} onClick={()=>{ if(group.variants.length>1) { setPendingGroup(group) } else { setSelService(group.rep) } }}
+                        style={{ padding:'1.2rem 1.3rem',border:`1.5px solid ${selService&&group.variants.some(v=>v.id===selService.id)?'#6b4f35':'#e8ddd0'}`,borderRadius:2,cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center',background:selService&&group.variants.some(v=>v.id===selService.id)?'#f4ede3':'white',boxShadow:selService&&group.variants.some(v=>v.id===selService.id)?'0 0 0 3px rgba(107,79,53,0.08)':'none',transition:'all 0.25s' }}>
+                        <div style={{ display:'flex',alignItems:'center',gap:'1rem' }}>
+                          {group.rep.imageUrl && <img src={group.rep.imageUrl} alt={group.rep.name} style={{ width:40,height:40,objectFit:'cover',borderRadius:4,flexShrink:0 }} />}
+                          <div>
+                            <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.15rem',fontWeight:400,color:'#2d2318' }}>{group.rep.name}</div>
+                            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',color:'#a8927a',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:'0.2rem' }}>
+                              {group.variants.length>1 ? `${group.variants.length} durations` : group.rep.durationMin>0?`${group.rep.durationMin} min`:'—'}
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign:'right',flexShrink:0 }}>
+                          <span style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:300,color:'#6b4f35' }}>
+                            {group.variants.length>1?`From $${group.minPrice.toFixed(0)}`:`$${Number(group.rep.price).toFixed(0)}`}
+                          </span>
+                          {group.variants.length>1 && <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',color:'#a8927a',marginTop:'0.1rem' }}>tap to select →</div>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
 
               {/* Hot Stone add-on — shows once any service is selected */}
               {hotStone && selService && (
