@@ -57,9 +57,14 @@ export default function HomePage() {
   const tsToken       = useRef<string>('')
   const days = getNext30Days()
 
+  const [showGallery, setShowGallery] = useState(true)
+
   useEffect(() => {
     fetch('/api/services').then(r=>r.json()).then(setServices).catch(()=>{})
     fetch('/api/therapists').then(r=>r.json()).then(setTherapists).catch(()=>{})
+    fetch('/api/site-config').then(r=>r.json()).then((d: Record<string,string>) => {
+      if (d.show_gallery === '0') setShowGallery(false)
+    }).catch(()=>{})
   }, [])
 
   useEffect(() => {
@@ -270,7 +275,7 @@ export default function HomePage() {
       </div>
 
       {/* GALLERY */}
-      <section style={{ background:'#1c1712', padding:'6rem 2rem' }}>
+      {showGallery && <section style={{ background:'#1c1712', padding:'6rem 2rem' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.22em', textTransform:'uppercase', color:'#6b4f35', marginBottom:'1rem', textAlign:'center' }}>Our Space</p>
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:300, color:'#faf6f0', textAlign:'center', marginBottom:'3rem' }}>A sanctuary for <em style={{ fontStyle:'italic', color:'#c8b49a' }}>rest &amp; renewal</em></h2>
@@ -284,7 +289,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* SERVICES */}
       <section id="services" style={{ background:'#faf6f0',padding:'7rem 3rem' }}>

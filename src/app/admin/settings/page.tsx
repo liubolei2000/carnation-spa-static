@@ -30,6 +30,10 @@ const FIELDS = [
   ]},
 ]
 
+const TOGGLES = [
+  { key:'show_gallery', label:'店铺照片相册', desc:'首页 Hero 下方的店铺实景照片区块' },
+]
+
 export default function SettingsPage() {
   const [config, setConfig]   = useState<Record<string,string>>({})
   const [loading, setLoading] = useState(true)
@@ -76,6 +80,31 @@ export default function SettingsPage() {
           style={{ padding:'0.5rem 1.2rem', background: dirty?'linear-gradient(135deg,#e8b86d,#c49540)':'#2a3045', border:'none', borderRadius:6, color: dirty?'#0f1117':'#7a8ba8', fontSize:'0.85rem', fontWeight:600, cursor: dirty?'pointer':'default', transition:'all 0.2s' }}>
           {saving ? '保存中…' : dirty ? '💾 保存所有更改' : '已是最新'}
         </button>
+      </div>
+
+      {/* 页面区块开关 */}
+      <div style={{ background:'#1c2333', border:'1px solid #2a3045', borderRadius:8, padding:'1.4rem', marginBottom:'1rem' }}>
+        <div style={{ fontSize:'0.82rem', fontWeight:600, color:'#e8b86d', marginBottom:'1.2rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
+          <div style={{ width:3, height:14, background:'#e8b86d', borderRadius:2 }}/>
+          页面区块显示
+        </div>
+        <div style={{ display:'flex', flexDirection:'column', gap:'0.8rem' }}>
+          {TOGGLES.map(t => {
+            const on = config[t.key] !== '0'
+            return (
+              <div key={t.key} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'1rem' }}>
+                <div>
+                  <div style={{ fontSize:'0.88rem', color:'#e2e8f0' }}>{t.label}</div>
+                  <div style={{ fontSize:'0.72rem', color:'#7a8ba8', marginTop:'0.15rem' }}>{t.desc}</div>
+                </div>
+                <button onClick={() => update(t.key, on ? '0' : '1')}
+                  style={{ flexShrink:0, width:44, height:24, borderRadius:12, border:'none', cursor:'pointer', background: on ? '#e8b86d' : '#2a3045', position:'relative', transition:'background 0.2s' }}>
+                  <span style={{ position:'absolute', top:3, left: on ? 22 : 3, width:18, height:18, borderRadius:'50%', background:'#fff', transition:'left 0.2s', display:'block' }}/>
+                </button>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))', gap:'1rem' }}>
