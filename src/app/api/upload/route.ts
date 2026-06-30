@@ -29,5 +29,5 @@ export async function POST(req: NextRequest) {
   const bytes = await file.arrayBuffer()
   await writeFile(join(uploadDir, filename), Buffer.from(bytes))
 
-  return NextResponse.json({ url: `/uploads/${filename}` })
+  return NextResponse.json({ url: `/api/files/${filename}` })
 }

@@ -27,6 +27,8 @@ services:
         condition: service_healthy
     ports:
       - "3000:3000"
+    volumes:
+      - uploads:/app/public/uploads
     environment:
       DATABASE_URL:              postgresql://carnation:carnation123@db:5432/carnation_spa
       DIRECT_URL:                postgresql://carnation:carnation123@db:5432/carnation_spa
@@ -49,3 +51,4 @@ services:
 
 volumes:
   pgdata:
+  uploads:
