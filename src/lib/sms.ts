@@ -53,11 +53,42 @@ async function sendSmsGateway(to: string, message: string): Promise<boolean> {
   }
 }
 
+
+// ── AWS SNS SMS ──────────────────────────────────────
+async function sendSnsSms(to: string, message: string): Promise<boolean> {
+  const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns")
+  const client = new SNSClient({
+    region: process.env.AWS_REGION || "us-east-1",
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
+  })
+  try {
+    await client.send(new PublishCommand({
+      PhoneNumber: to,
+      Message: message,
+      MessageAttributes: {
+        "AWS.SNS.SMS.SMSType": { DataType: "String", StringValue: "Transactional" },
+      },
+    }))
+    return true
+  } catch (err) {
+    console.error("[SNS SMS Error]", err)
+    return false
+  }
+}
+
 export async function sendSms(to: string, body: string): Promise<boolean> {
   // 优先使用 Android SMS Gateway（dev/prod 都发）
   if (process.env.SMS_GATEWAY_URL) {
     if (IS_DEV) console.log(`📱 [SMS Gateway] To: ${to}\n${body}`)
-    return sendSmsGateway(to, body)
+    const ok = await sendSmsGateway(to, body)
+    if (ok) return true
+    console.warn("[SMS] Gateway failed, falling back to SNS")
+  }
+  if (process.env.AWS_ACCESS_KEY_ID) {
+    return sendSnsSms(to, body)
   }
   if (IS_DEV) {
     console.log('\n' + '─'.repeat(60))

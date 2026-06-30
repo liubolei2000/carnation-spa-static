@@ -17,7 +17,7 @@ const EMOJIS = ['🌿','💆','🕯️','🪨','💎','🌸','🧘','✨']
 
 function getNext14Days() {
   return Array.from({length:14}, (_, i) => {
-    const d = new Date(); d.setDate(d.getDate() + i + 1); return d
+    const d = new Date(); d.setDate(d.getDate() + i); return d
   })
 }
 

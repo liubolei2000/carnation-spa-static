@@ -204,7 +204,7 @@ export default function HomePage() {
         {/* Desktop nav */}
         <div style={{ display:'flex',alignItems:'center',gap:'2rem' }}>
           <ul style={{ display:'flex',gap:'2rem',listStyle:'none',margin:0 }}>
-            {[['Services','#services'],['Team','#team'],['Reviews','#reviews'],['About','#about']].map(([l,h])=>(
+            {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
               <li key={l} style={{ display:'none' }} className="desktop-nav-item">
                 <a href={h} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:scrolled?'#a8927a':'rgba(250,246,240,0.75)',textDecoration:'none' }}>{l}</a>
               </li>
@@ -228,7 +228,7 @@ export default function HomePage() {
       {/* Mobile nav overlay */}
       {navOpen && (
         <div style={{ position:'fixed',inset:0,zIndex:99,background:'rgba(28,23,18,0.97)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'2.5rem' }}>
-          {[['Services','#services'],['Team','#team'],['Reviews','#reviews'],['About','#about']].map(([l,h])=>(
+          {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
             <a key={l} href={h} onClick={()=>setNavOpen(false)}
               style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2.5rem',fontWeight:300,color:'#faf6f0',textDecoration:'none',letterSpacing:'0.1em' }}>
               {l}
@@ -252,10 +252,10 @@ export default function HomePage() {
         <div style={{ position:'relative',zIndex:2,textAlign:'center',padding:'0 2rem',animation:'heroReveal 1.4s both' }}>
           <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.4em',textTransform:'uppercase',color:'#c8b49a',marginBottom:'1.8rem' }}>carnation spa · burlington, ma</div>
           <h1 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(3.5rem,9vw,8rem)',fontWeight:300,lineHeight:0.95,color:'#faf6f0',marginBottom:'1.5rem' }}>
-            Real Relief,<br/><em style={{ fontStyle:'italic',color:'#c9a96e' }}>Real Results</em>
+            Feel Good,<br/><em style={{ fontStyle:'italic',color:'#c9a96e' }}>Come Back</em>
           </h1>
           <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'1.1rem',fontWeight:300,color:'rgba(250,246,240,0.7)',letterSpacing:'0.08em',marginBottom:'3rem',maxWidth:460,margin:'0 auto 3rem',lineHeight:1.8 }}>
-            Burlington's therapeutic massage studio — deep tissue, Swedish, prenatal &amp; more. Licensed therapists who actually fix what hurts.
+            Burlington's go-to massage studio — deep tissue, Swedish, prenatal &amp; more. Licensed therapists ready to help.
           </p>
           <div style={{ display:'flex',alignItems:'center',gap:'1rem',flexWrap:'wrap',justifyContent:'center' }}>
             <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.18em',textTransform:'uppercase',padding:'1rem 2.8rem',background:'#faf6f0',color:'#1c1712',border:'none',cursor:'pointer',borderRadius:1,transition:'all 0.35s' }}>Book a Session</button>
@@ -269,6 +269,23 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* GALLERY */}
+      <section style={{ background:'#1c1712', padding:'6rem 2rem' }}>
+        <div style={{ maxWidth:1100, margin:'0 auto' }}>
+          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.22em', textTransform:'uppercase', color:'#6b4f35', marginBottom:'1rem', textAlign:'center' }}>Our Space</p>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:300, color:'#faf6f0', textAlign:'center', marginBottom:'3rem' }}>A sanctuary for <em style={{ fontStyle:'italic', color:'#c8b49a' }}>rest &amp; renewal</em></h2>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:'12px' }}>
+            {[1,2,3,4,5,6].map(n=>(
+              <div key={n} style={{ aspectRatio:'4/3', overflow:'hidden', borderRadius:2 }}>
+                <img src={`/${n}.jpg`} alt={`Carnation Spa ${n}`} style={{ width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.5s ease' }}
+                  onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.05)')}
+                  onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* SERVICES */}
       <section id="services" style={{ background:'#faf6f0',padding:'7rem 3rem' }}>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:'4rem',flexWrap:'wrap',gap:'2rem' }}>
@@ -277,7 +294,7 @@ export default function HomePage() {
               <span style={{ display:'block',width:30,height:1,background:'#c8b49a' }}/> Our Services
             </div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#2d2318' }}>
-              Targeted treatments for <em style={{ fontStyle:'italic',color:'#6b4f35' }}>lasting relief</em>
+              Treatments tailored to <em style={{ fontStyle:'italic',color:'#6b4f35' }}>how you feel</em>
             </h2>
           </div>
           <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.8rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.8rem 2rem',background:'transparent',border:'1.5px solid #c8b49a',color:'#6b4f35',cursor:'pointer',borderRadius:1 }}>
@@ -311,11 +328,9 @@ export default function HomePage() {
                 onMouseLeave={()=>setHoveredSvc(null)}
                 style={{ borderRadius:4,overflow:'hidden',cursor:'pointer',position:'relative',background:'#2d2318',boxShadow:hovered?'0 12px 40px rgba(28,23,18,0.18)':'0 2px 12px rgba(28,23,18,0.08)',transform:hovered?'translateY(-4px)':'translateY(0)',transition:'all 0.35s cubic-bezier(0.16,1,0.3,1)' }}>
                 {/* Image */}
+                {svc.imageUrl && (
                 <div style={{ height:220,overflow:'hidden',position:'relative' }}>
-                  {svc.imageUrl
-                    ? <img src={svc.imageUrl} alt={svc.name} style={{ width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.55s ease',transform:hovered?'scale(1.06)':'scale(1)' }} />
-                    : <div style={{ width:'100%',height:'100%',background:'linear-gradient(160deg,#6b4f35,#2d2318)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'4rem' }}>{EMOJIS[i%EMOJIS.length]}</div>
-                  }
+                  <img src={svc.imageUrl} alt={svc.name} style={{ width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.55s ease',transform:hovered?'scale(1.06)':'scale(1)' }} />
                   {/* Hot Stone: add-on badge */}
                   {isHotStone && (
                     <div style={{ position:'absolute',top:12,left:12,background:'rgba(201,169,110,0.92)',backdropFilter:'blur(4px)',borderRadius:2,padding:'0.2rem 0.6rem',fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'#1c1712',fontWeight:600 }}>
@@ -331,6 +346,7 @@ export default function HomePage() {
                     )}
                   </div>
                 </div>
+                )}
                 {/* Card footer */}
                 <div style={{ padding:'1rem 1.2rem',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
                   <div>
@@ -353,7 +369,7 @@ export default function HomePage() {
           <div style={{ textAlign:'center',marginBottom:'3.5rem' }}>
             <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#a8927a',marginBottom:'1rem' }}>Why Carnation Spa</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2rem,4vw,3rem)',fontWeight:300,color:'#faf6f0' }}>
-              Burlington's <em style={{ fontStyle:'italic',color:'#c9a96e' }}>therapeutic</em> massage studio
+              Burlington's <em style={{ fontStyle:'italic',color:'#c9a96e' }}>go-to</em> massage studio
             </h2>
           </div>
           <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'1.5rem' }}>
@@ -388,13 +404,12 @@ export default function HomePage() {
             <div key={t.id} style={{ background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:2,overflow:'hidden',transition:'all 0.35s' }}
               onMouseEnter={e=>{ const el=e.currentTarget as HTMLDivElement; el.style.background='rgba(255,255,255,0.07)'; el.style.transform='translateY(-4px)'; el.style.borderColor='rgba(201,169,110,0.3)' }}
               onMouseLeave={e=>{ const el=e.currentTarget as HTMLDivElement; el.style.background='rgba(255,255,255,0.04)'; el.style.transform='translateY(0)'; el.style.borderColor='rgba(255,255,255,0.08)' }}>
-              <div style={{ width:'100%',aspectRatio:'3/4',background:'linear-gradient(160deg,#6b4f35 0%,#2d2318 100%)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'4rem',position:'relative',overflow:'hidden' }}>
-                {t.avatarUrl
-                  ? <img src={t.avatarUrl} alt={t.name} style={{ width:'100%',height:'100%',objectFit:'cover',position:'absolute',inset:0 }} />
-                  : TAVATAR[i%TAVATAR.length]
-                }
-                <div style={{ position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 60%,rgba(28,23,18,0.6) 100%)' }} />
-              </div>
+              {t.avatarUrl && (
+                <div style={{ width:'100%',aspectRatio:'3/4',background:'linear-gradient(160deg,#6b4f35 0%,#2d2318 100%)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'4rem',position:'relative',overflow:'hidden' }}>
+                  <img src={t.avatarUrl} alt={t.name} style={{ width:'100%',height:'100%',objectFit:'cover',position:'absolute',inset:0 }} />
+                  <div style={{ position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 60%,rgba(28,23,18,0.6) 100%)' }} />
+                </div>
+              )}
               <div style={{ padding:'1.5rem' }}>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:400,color:'#faf6f0',marginBottom:'0.4rem' }}>{t.name}</div>
                 <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#a8927a',marginBottom:'0.8rem' }}>{t.title??'Therapist'}</div>
@@ -411,57 +426,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* REVIEWS */}
-      <section id="reviews" style={{ background:'#faf6f0',padding:'7rem 3rem' }}>
-        <div style={{ maxWidth:1100,margin:'0 auto' }}>
-          <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:'4rem',flexWrap:'wrap',gap:'1.5rem' }}>
-            <div>
-              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#a8927a',marginBottom:'1rem',display:'flex',alignItems:'center',gap:'1rem' }}>
-                <span style={{ display:'block',width:30,height:1,background:'#c8b49a' }}/> Customer Reviews
-              </div>
-              <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.2rem)',fontWeight:300,color:'#2d2318' }}>
-                What our guests <em style={{ fontStyle:'italic',color:'#6b4f35' }}>say</em>
-              </h2>
-            </div>
-            <div style={{ display:'flex',alignItems:'center',gap:'1rem' }}>
-              <div style={{ textAlign:'center' }}>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'3.5rem',fontWeight:300,color:'#2d2318',lineHeight:1 }}>4.9</div>
-                <div style={{ color:'#c9a96e',fontSize:'1.1rem',margin:'0.3rem 0' }}>★★★★★</div>
-                <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.65rem',color:'#a8927a',letterSpacing:'0.1em' }}>127+ REVIEWS</div>
-              </div>
-            </div>
-          </div>
-          <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))',gap:'1.5rem' }}>
-            {[
-              { name:'Sarah M.', date:'January 2025', rating:5, text:'Absolutely the best massage experience I\'ve had in Burlington. My therapist was incredibly skilled — I walked in with neck tension and left feeling completely renewed. Will definitely be back!', source:'Google' },
-              { name:'James T.', date:'February 2025', rating:5, text:'I\'ve been coming to Carnation Spa for 6 months now and it never disappoints. The atmosphere is so calming, the staff is professional, and the deep tissue work is exceptional. Highly recommend!', source:'Google' },
-              { name:'Emily R.', date:'December 2024', rating:5, text:'Treated myself to a Swedish massage and hot stone add-on. Pure bliss. The booking process online was super easy and they were very accommodating with my schedule. 10/10!', source:'Yelp' },
-              { name:'Michael C.', date:'January 2025', rating:5, text:'Best foot massage in the area, hands down. Very clean, relaxing environment. My therapist was attentive and made sure I was comfortable throughout. Great value for the price.', source:'Google' },
-              { name:'Linda K.', date:'February 2025', rating:5, text:'I booked a prenatal massage and felt so well taken care of. They were very knowledgeable about what positions and techniques are safe. Such a peaceful escape from the busy day!', source:'Google' },
-              { name:'David L.', date:'March 2025', rating:5, text:'Convenient location, easy parking, friendly staff. My go-to spot in Burlington for unwinding after a stressful week. The online booking is so seamless — love that no account is needed.', source:'Yelp' },
-            ].map(r => (
-              <div key={r.name} style={{ background:'white',border:'1px solid #e8ddd0',borderRadius:2,padding:'1.8rem',display:'flex',flexDirection:'column',gap:'1rem' }}>
-                <div style={{ color:'#c9a96e',fontSize:'0.95rem',letterSpacing:'0.1em' }}>{'★'.repeat(r.rating)}</div>
-                <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'0.93rem',lineHeight:1.8,color:'#5a4030',flex:1 }}>"{r.text}"</p>
-                <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',paddingTop:'1rem',borderTop:'1px solid #f4ede3' }}>
-                  <div>
-                    <div style={{ fontFamily:"'Jost',sans-serif",fontSize:'0.88rem',fontWeight:500,color:'#2d2318' }}>{r.name}</div>
-                    <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.65rem',color:'#a8927a',letterSpacing:'0.08em',marginTop:2 }}>{r.date}</div>
-                  </div>
-                  <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'#a8927a',background:'#f4ede3',padding:'0.2rem 0.6rem',borderRadius:20 }}>{r.source}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section id="about" style={{ background:'#f4ede3',textAlign:'center',padding:'8rem 3rem',position:'relative',overflow:'hidden' }}>
         <div style={{ position:'absolute',fontFamily:"'Cormorant Garamond',serif",fontSize:'20vw',fontWeight:300,color:'#e8ddd0',top:'50%',left:'50%',transform:'translate(-50%,-50%)',whiteSpace:'nowrap',pointerEvents:'none',letterSpacing:'0.3em',zIndex:0 }}>CARNATION</div>
         <div style={{ position:'relative',zIndex:1 }}>
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#2d2318',maxWidth:600,margin:'0 auto 2rem' }}>
-            Therapeutic massage that <em style={{ fontStyle:'italic',color:'#6b4f35' }}>actually works</em>
+            Massage therapy <em style={{ fontStyle:'italic',color:'#6b4f35' }}>worth the drive</em>
           </h2>
           <p style={{ fontSize:'1.05rem',color:'#a8927a',maxWidth:480,margin:'0 auto 3rem',lineHeight:1.9 }}>
             120 Cambridge St, Suite 8 · Burlington, MA 01803<br/>(978) 330-0895
@@ -583,10 +554,7 @@ export default function HomePage() {
                   <div key={svc.id} onClick={()=>setSelService(svc)}
                     style={{ padding:'1.2rem 1.3rem',border:`1.5px solid ${selService?.id===svc.id?'#6b4f35':'#e8ddd0'}`,borderRadius:2,cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center',background:selService?.id===svc.id?'#f4ede3':'white',boxShadow:selService?.id===svc.id?'0 0 0 3px rgba(107,79,53,0.08)':'none',transition:'all 0.25s' }}>
                     <div style={{ display:'flex',alignItems:'center',gap:'1rem' }}>
-                      {svc.imageUrl
-                        ? <img src={svc.imageUrl} alt={svc.name} style={{ width:40,height:40,objectFit:'cover',borderRadius:4,flexShrink:0 }} />
-                        : <span style={{ fontSize:'1.6rem' }}>{EMOJIS[i%EMOJIS.length]}</span>
-                      }
+                      {svc.imageUrl && <img src={svc.imageUrl} alt={svc.name} style={{ width:40,height:40,objectFit:'cover',borderRadius:4,flexShrink:0 }} />}
                       <div>
                         <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.15rem',fontWeight:400,color:'#2d2318' }}>{svc.name}</div>
                         <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',color:'#a8927a',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:'0.2rem' }}>{svc.durationMin>0?`${svc.durationMin} min`:'—'}</div>

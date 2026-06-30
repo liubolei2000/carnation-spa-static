@@ -3,11 +3,11 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Carnation Spa — Massage Therapy & Wellness · Burlington, MA',
+  title: 'Carnation Spa — Massage Therapy in Burlington, MA',
   description: 'Carnation Spa in Burlington, MA offers Swedish massage, deep tissue, foot massage, hot stone & more. Licensed therapists, easy online booking. Call (978) 330-0895.',
   keywords: 'massage Burlington MA, spa Burlington MA, deep tissue massage Burlington, Swedish massage Burlington, foot massage Burlington, best massage Burlington, massage therapy Burlington Massachusetts',
   openGraph: {
-    title: 'Carnation Spa — Best Massage in Burlington, MA',
+    title: 'Carnation Spa — Massage Therapy in Burlington, MA',
     description: 'Licensed massage therapists in Burlington, MA. Swedish, deep tissue, hot stone & more. Book online in minutes.',
     type: 'website',
     url: 'https://carnationspaburlington.com',
@@ -72,6 +72,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18001986293"></script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-18001986293');
+        `}} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&family=DM+Mono:wght@300;400&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -81,7 +88,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var p = window.location.pathname;
+            var r = document.referrer || '';
+            fetch('/api/analytics/pageview', {
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({path:p, referrer:r}),
+              keepalive: true
+            }).catch(function(){});
+          })();
+        `}}/>
+      </body>
     </html>
   )
 }

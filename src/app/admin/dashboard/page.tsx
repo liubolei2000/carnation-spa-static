@@ -3,6 +3,12 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+interface AnalyticsStats {
+  today: number; week: number; month: number
+  topPages: { path: string; count: number }[]
+  daily: { day: string; count: number }[]
+}
+
 interface Appointment {
   id: string; customerName: string; customerPhone: string
   appointmentAt: string; status: string; source: string; notes: string | null
@@ -31,6 +37,7 @@ export default function DashboardPage() {
   const [lang, setLang]         = useState<'zh'|'en'>('zh')
   const [toast, setToast]       = useState('')
   const [isMobile, setIsMobile] = useState(false)
+  const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null)
 
   const today = new Date().toISOString().split('T')[0]
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
@@ -47,6 +54,10 @@ export default function DashboardPage() {
       .then(r => r.json())
       .then(data => { setAppts(Array.isArray(data) ? data : []); setLoading(false) })
       .catch(() => setLoading(false))
+    fetch('/api/analytics/stats')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setAnalytics(data) })
+      .catch(() => {})
   }, [])
 
   async function updateStatus(id: string, status: string) {
@@ -125,6 +136,71 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* Analytics */}
+      {analytics && (
+        <div style={{ background:'#1c2333', border:'1px solid #2a3045', borderRadius:8, overflow:'hidden', marginBottom:'1.5rem' }}>
+          <div style={{ padding:'0.9rem 1rem', borderBottom:'1px solid #2a3045', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <span style={{ fontSize:'0.85rem', fontWeight:500 }}>📈 {lang==='zh'?'网页访问量':'Website Traffic'}</span>
+            <span style={{ fontFamily:'monospace', fontSize:'0.7rem', color:'#7a8ba8' }}>{lang==='zh'?'近7天':'Last 7 days'}</span>
+          </div>
+          <div style={{ padding:'1rem' }}>
+            {/* Stats row */}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'0.75rem', marginBottom:'1rem' }}>
+              {[
+                { label: lang==='zh'?'今日访问':'Today',  value: analytics.today,  color:'#a78bfa' },
+                { label: lang==='zh'?'本周访问':'This Week', value: analytics.week, color:'#60a5fa' },
+                { label: lang==='zh'?'本月访问':'This Month', value: analytics.month, color:'#6dbf8e' },
+              ].map(s => (
+                <div key={s.label} style={{ background:'#161b27', borderRadius:6, padding:'0.75rem 1rem', borderTop:`2px solid ${s.color}` }}>
+                  <div style={{ fontFamily:'monospace', fontSize:'0.6rem', color:'#7a8ba8', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'0.3rem' }}>{s.label}</div>
+                  <div style={{ fontSize:'1.5rem', fontWeight:600, color: s.color }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+            {/* Bar chart */}
+            {analytics.daily.length > 0 && (() => {
+              const max = Math.max(...analytics.daily.map(d => d.count), 1)
+              return (
+                <div style={{ marginBottom:'1rem' }}>
+                  <div style={{ fontFamily:'monospace', fontSize:'0.62rem', color:'#3d4f6e', marginBottom:'0.5rem', textTransform:'uppercase', letterSpacing:'0.08em' }}>
+                    {lang==='zh'?'每日访问':'Daily visits'}
+                  </div>
+                  <div style={{ display:'flex', alignItems:'flex-end', gap:4, height:60 }}>
+                    {analytics.daily.map(d => (
+                      <div key={d.day} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
+                        <div style={{ width:'100%', background:'rgba(99,102,241,0.7)', borderRadius:'3px 3px 0 0', height: `${Math.max((d.count/max)*56, 3)}px`, transition:'height .3s' }} title={`${d.day}: ${d.count}`}/>
+                        <div style={{ fontFamily:'monospace', fontSize:'0.55rem', color:'#3d4f6e' }}>{d.day.slice(5)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
+            {/* Top pages */}
+            {analytics.topPages.length > 0 && (
+              <div>
+                <div style={{ fontFamily:'monospace', fontSize:'0.62rem', color:'#3d4f6e', marginBottom:'0.5rem', textTransform:'uppercase', letterSpacing:'0.08em' }}>
+                  {lang==='zh'?'热门页面':'Top pages'}
+                </div>
+                {analytics.topPages.map((p, i) => {
+                  const pct = Math.round((p.count / analytics.week) * 100)
+                  return (
+                    <div key={p.path} style={{ display:'flex', alignItems:'center', gap:'0.75rem', marginBottom:'0.4rem' }}>
+                      <div style={{ fontFamily:'monospace', fontSize:'0.65rem', color:'#3d4f6e', width:14, textAlign:'right' }}>{i+1}</div>
+                      <div style={{ flex:1, fontFamily:'monospace', fontSize:'0.72rem', color:'#94a3b8', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.path || '/'}</div>
+                      <div style={{ width:80, height:5, background:'#1e2d45', borderRadius:3, overflow:'hidden', flexShrink:0 }}>
+                        <div style={{ height:'100%', width:`${pct}%`, background:'rgba(99,102,241,0.7)', borderRadius:3 }}/>
+                      </div>
+                      <div style={{ fontFamily:'monospace', fontSize:'0.65rem', color:'#7a8ba8', width:28, textAlign:'right', flexShrink:0 }}>{p.count}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Appointments list */}
       <div style={{ background:'#1c2333', border:'1px solid #2a3045', borderRadius:8, overflow:'hidden' }}>

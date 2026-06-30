@@ -215,3 +215,17 @@ model SiteConfig {
   type      SiteConfigType @default(TEXT)
   updatedAt DateTime       @updatedAt
 }
+
+// ─────────────────────────────────────────
+// PAGE VIEWS (website traffic tracking)
+// ─────────────────────────────────────────
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+}

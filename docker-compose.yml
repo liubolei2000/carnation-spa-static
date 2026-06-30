@@ -42,6 +42,10 @@ services:
       CRON_SECRET:               ${CRON_SECRET:-}
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
       TURNSTILE_SECRET_KEY:      ${TURNSTILE_SECRET_KEY:-}
+      TZ:                        America/New_York
+      AWS_ACCESS_KEY_ID:         ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY:     ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION:                ${AWS_REGION:-us-east-1}
 
 volumes:
   pgdata:
