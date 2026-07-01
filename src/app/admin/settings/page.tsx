@@ -77,15 +77,15 @@ export default function SettingsPage() {
           <div style={{ fontSize:'0.82rem', color:'#7a8ba8', marginTop:'0.2rem' }}>编辑顾客端网页显示内容</div>
         </div>
         <button onClick={saveAll} disabled={saving || !dirty}
-          style={{ padding:'0.5rem 1.2rem', background: dirty?'linear-gradient(135deg,#e8749a,#d44878)':'#2a3045', border:'none', borderRadius:6, color: dirty?'#0f1117':'#7a8ba8', fontSize:'0.85rem', fontWeight:600, cursor: dirty?'pointer':'default', transition:'all 0.2s' }}>
+          style={{ padding:'0.5rem 1.2rem', background: dirty?'linear-gradient(135deg,#D4899A,#B86878)':'#2a3045', border:'none', borderRadius:6, color: dirty?'#0f1117':'#7a8ba8', fontSize:'0.85rem', fontWeight:600, cursor: dirty?'pointer':'default', transition:'all 0.2s' }}>
           {saving ? '保存中…' : dirty ? '💾 保存所有更改' : '已是最新'}
         </button>
       </div>
 
       {/* 页面区块开关 */}
       <div style={{ background:'#1c2333', border:'1px solid #2a3045', borderRadius:8, padding:'1.4rem', marginBottom:'1rem' }}>
-        <div style={{ fontSize:'0.82rem', fontWeight:600, color:'#e8749a', marginBottom:'1.2rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
-          <div style={{ width:3, height:14, background:'#e8749a', borderRadius:2 }}/>
+        <div style={{ fontSize:'0.82rem', fontWeight:600, color:'#D4899A', marginBottom:'1.2rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
+          <div style={{ width:3, height:14, background:'#D4899A', borderRadius:2 }}/>
           页面区块显示
         </div>
         <div style={{ display:'flex', flexDirection:'column', gap:'0.8rem' }}>
@@ -98,7 +98,7 @@ export default function SettingsPage() {
                   <div style={{ fontSize:'0.72rem', color:'#7a8ba8', marginTop:'0.15rem' }}>{t.desc}</div>
                 </div>
                 <button onClick={() => update(t.key, on ? '0' : '1')}
-                  style={{ flexShrink:0, width:44, height:24, borderRadius:12, border:'none', cursor:'pointer', background: on ? '#e8749a' : '#2a3045', position:'relative', transition:'background 0.2s' }}>
+                  style={{ flexShrink:0, width:44, height:24, borderRadius:12, border:'none', cursor:'pointer', background: on ? '#D4899A' : '#2a3045', position:'relative', transition:'background 0.2s' }}>
                   <span style={{ position:'absolute', top:3, left: on ? 22 : 3, width:18, height:18, borderRadius:'50%', background:'#fff', transition:'left 0.2s', display:'block' }}/>
                 </button>
               </div>
@@ -110,8 +110,8 @@ export default function SettingsPage() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))', gap:'1rem' }}>
         {FIELDS.map(section => (
           <div key={section.section} style={{ background:'#1c2333', border:'1px solid #2a3045', borderRadius:8, padding:'1.4rem' }}>
-            <div style={{ fontSize:'0.82rem', fontWeight:600, color:'#e8749a', marginBottom:'1.2rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
-              <div style={{ width:3, height:14, background:'#e8749a', borderRadius:2 }}/>
+            <div style={{ fontSize:'0.82rem', fontWeight:600, color:'#D4899A', marginBottom:'1.2rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
+              <div style={{ width:3, height:14, background:'#D4899A', borderRadius:2 }}/>
               {section.section}
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
