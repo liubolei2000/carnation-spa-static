@@ -148,7 +148,7 @@ export default function ServicesPage() {
           <div style={{ fontSize:'0.82rem', color:'#7a8ba8', marginTop:'0.2rem' }}>每个项目可设置多个时长选项</div>
         </div>
         <button onClick={() => { setGroupOrigName(''); setGroupModal({ name: '', description: null, imageUrl: null }) }}
-          style={{ padding:'0.5rem 1rem', background:'linear-gradient(135deg,#e8b86d,#c49540)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.8rem', fontWeight:600, cursor:'pointer' }}>
+          style={{ padding:'0.5rem 1rem', background:'linear-gradient(135deg,#e8749a,#d44878)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.8rem', fontWeight:600, cursor:'pointer' }}>
           ＋ 添加项目
         </button>
       </div>
@@ -178,7 +178,7 @@ export default function ServicesPage() {
               {group.variants.map(v => (
                 <div key={v.id} style={{ display:'flex', alignItems:'center', gap:'0.6rem', padding:'0.55rem 0', borderBottom:'1px solid #1a2030' }}>
                   <span style={{ fontFamily:'monospace', fontSize:'0.8rem', background:'#161b27', border:'1px solid #2a3045', padding:'0.15rem 0.55rem', borderRadius:4, color:'#a0aec0', flexShrink:0 }}>{v.durationMin} min</span>
-                  <span style={{ fontWeight:600, color:'#e8b86d', flexShrink:0, minWidth:40 }}>${Number(v.price).toFixed(0)}</span>
+                  <span style={{ fontWeight:600, color:'#e8749a', flexShrink:0, minWidth:40 }}>${Number(v.price).toFixed(0)}</span>
                   <span style={{ flex:1 }} />
                   <span style={{ fontSize:'0.65rem', padding:'0.1rem 0.45rem', borderRadius:3, background: v.isActive?'rgba(109,191,142,0.15)':'rgba(248,113,113,0.12)', color: v.isActive?'#6dbf8e':'#f87171' }}>
                     {v.isActive ? '上架' : '下架'}
@@ -257,7 +257,7 @@ export default function ServicesPage() {
                 }
                 setSaving(false)
               }} disabled={saving}
-                style={{ padding:'0.6rem 1.4rem', background:'linear-gradient(135deg,#e8b86d,#c49540)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.83rem', fontWeight:600, cursor:'pointer', opacity:saving?0.7:1 }}>
+                style={{ padding:'0.6rem 1.4rem', background:'linear-gradient(135deg,#e8749a,#d44878)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.83rem', fontWeight:600, cursor:'pointer', opacity:saving?0.7:1 }}>
                 {saving ? '保存中…' : '确认'}
               </button>
             </div>
@@ -292,7 +292,7 @@ export default function ServicesPage() {
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                 <span style={{...lbl, margin:0}}>上架状态</span>
                 <button onClick={() => setVarModal(m => m ? {...m, isActive: !m.isActive} : m)}
-                  style={{ width:44, height:24, borderRadius:12, border:'none', cursor:'pointer', background: varModal.isActive ? '#e8b86d' : '#2a3045', position:'relative', transition:'background 0.2s' }}>
+                  style={{ width:44, height:24, borderRadius:12, border:'none', cursor:'pointer', background: varModal.isActive ? '#e8749a' : '#2a3045', position:'relative', transition:'background 0.2s' }}>
                   <span style={{ position:'absolute', top:3, left: varModal.isActive ? 22 : 3, width:18, height:18, borderRadius:'50%', background:'#fff', transition:'left 0.2s', display:'block' }}/>
                 </button>
               </div>
@@ -300,7 +300,7 @@ export default function ServicesPage() {
             <div style={{ padding:'1rem 1.4rem', borderTop:'1px solid #2a3045', display:'flex', gap:'0.6rem', justifyContent:'flex-end' }}>
               <button onClick={() => setVarModal(null)} style={{ padding:'0.6rem 1.2rem', background:'transparent', border:'1px solid #2a3045', borderRadius:6, color:'#7a8ba8', fontSize:'0.83rem', cursor:'pointer' }}>取消</button>
               <button onClick={saveVariant} disabled={saving}
-                style={{ padding:'0.6rem 1.4rem', background:'linear-gradient(135deg,#e8b86d,#c49540)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.83rem', fontWeight:600, cursor:'pointer', opacity:saving?0.7:1 }}>
+                style={{ padding:'0.6rem 1.4rem', background:'linear-gradient(135deg,#e8749a,#d44878)', border:'none', borderRadius:6, color:'#0f1117', fontSize:'0.83rem', fontWeight:600, cursor:'pointer', opacity:saving?0.7:1 }}>
                 {saving ? '保存中…' : '确认保存'}
               </button>
             </div>
