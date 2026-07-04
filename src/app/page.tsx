@@ -152,32 +152,37 @@ export default function HomePage() {
     if (!phone) { setError('Please enter your phone number first'); return }
     setSendingCode(true); setError('')
 
-    // If Turnstile is configured (production), wait up to 5s for the token
-    const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-    if (sitekey && process.env.NODE_ENV !== 'development' && !tsToken.current) {
-      await new Promise<void>(resolve => {
-        let waited = 0
-        const poll = setInterval(() => {
-          waited += 100
-          if (tsToken.current || waited >= 5000) { clearInterval(poll); resolve() }
-        }, 100)
+    try {
+      // If Turnstile is configured (production), wait up to 3s for the token
+      const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+      if (sitekey && process.env.NODE_ENV !== 'development' && !tsToken.current) {
+        await new Promise<void>(resolve => {
+          let waited = 0
+          const poll = setInterval(() => {
+            waited += 100
+            if (tsToken.current || waited >= 3000) { clearInterval(poll); resolve() }
+          }, 100)
+        })
+      }
+
+      const cfToken = tsToken.current
+      // Consume token — reset widget so next send gets a fresh one
+      tsToken.current = ''
+      if (tsWidgetId.current && window.turnstile) window.turnstile.reset(tsWidgetId.current)
+
+      const res = await fetch('/api/sms/send', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ phone, purpose:'BOOKING', cfToken })
       })
-    }
-
-    const cfToken = tsToken.current
-    // Consume token — reset widget so next send gets a fresh one
-    tsToken.current = ''
-    if (tsWidgetId.current && window.turnstile) window.turnstile.reset(tsWidgetId.current)
-
-    const res = await fetch('/api/sms/send', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ phone, purpose:'BOOKING', cfToken })
-    })
-    setSendingCode(false)
-    if (res.ok) { setCodeSent(true); setCodeTimer(60) }
-    else {
-      const d = await res.json()
-      setError(d.error==='RATE_LIMITED'?'Too many requests. Wait a moment.':d.error==='BOT_DETECTED'?'Verification failed. Please try again.':'Failed to send code. Check phone number.')
+      if (res.ok) { setCodeSent(true); setCodeTimer(60) }
+      else {
+        const d = await res.json()
+        setError(d.error==='RATE_LIMITED'?'Too many requests. Wait a moment.':d.error==='BOT_DETECTED'?'Verification failed. Please try again.':'Failed to send code. Check phone number.')
+      }
+    } catch {
+      setError('Failed to send code. Please try again.')
+    } finally {
+      setSendingCode(false)
     }
   }
 
