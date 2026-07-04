@@ -5,7 +5,7 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 15px; }
-body { background: #0f1117; color: #e2e8f0; font-family: 'Sora', sans-serif; }
+body { background: #FFFFFF; color: #1A1218; font-family: 'Sora', sans-serif; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #161b27; }
-::-webkit-scrollbar-thumb { background: #2a3045; border-radius: 2px; }
+::-webkit-scrollbar-track { background: #FFFFFF; }
+::-webkit-scrollbar-thumb { background: #DDB8C4; border-radius: 2px; }

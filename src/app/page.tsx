@@ -209,8 +209,8 @@ export default function HomePage() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
         html{scroll-behavior:smooth}
-        body{background:#FFF8FA;color:#1A1218;font-family:'Jost',sans-serif;font-weight:300;overflow-x:hidden;font-size:17px}
-        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#F8EDF0}::-webkit-scrollbar-thumb{background:#DDB8C4;border-radius:2px}
+        body{background:#FFFFFF;color:#1A1218;font-family:'Jost',sans-serif;font-weight:300;overflow-x:hidden;font-size:17px}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#FFFFFF}::-webkit-scrollbar-thumb{background:#DDB8C4;border-radius:2px}
         @keyframes heroReveal{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
         @keyframes overlayUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -219,27 +219,27 @@ export default function HomePage() {
       `}} />
 
       {/* NAV */}
-      <nav style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',justifyContent:'space-between',alignItems:'center', padding:scrolled?'1rem 1.5rem':'1.5rem 2rem', background:scrolled?'rgba(244,237,227,0.95)':'transparent', backdropFilter:scrolled?'blur(12px)':'none', borderBottom:scrolled?'1px solid #EDD8DF':'none', transition:'all 0.4s' }}>
-        <a href="#" style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,letterSpacing:'0.2em',color:scrolled?'#1A1218':'#FFF8FA',textDecoration:'none' }}>Carnation</a>
+      <nav style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',justifyContent:'space-between',alignItems:'center', padding:scrolled?'1rem 1.5rem':'1.5rem 2rem', background:scrolled?'rgba(255,255,255,0.95)':'rgba(255,255,255,0)', backdropFilter:scrolled?'blur(12px)':'none', borderBottom:scrolled?'1px solid #EDD8DF':'none', transition:'all 0.4s' }}>
+        <a href="#" style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,letterSpacing:'0.2em',color:'#1A1218',textDecoration:'none' }}>Carnation</a>
         {/* Desktop nav */}
         <div style={{ display:'flex',alignItems:'center',gap:'2rem' }}>
           <ul style={{ display:'flex',gap:'2rem',listStyle:'none',margin:0 }}>
             {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
               <li key={l} style={{ display:'none' }} className="desktop-nav-item">
-                <a href={h} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:scrolled?'#B09098':'rgba(250,246,240,0.75)',textDecoration:'none' }}>{l}</a>
+                <a href={h} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'#8A4858',textDecoration:'none' }}>{l}</a>
               </li>
             ))}
           </ul>
-          <a href="tel:9783300895" style={{ display:'none',fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.12em',textTransform:'uppercase',color:scrolled?'#8A4858':'rgba(250,246,240,0.75)',textDecoration:'none' }} className="desktop-nav-item">
+          <a href="tel:9783300895" style={{ display:'none',fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#8A4858',textDecoration:'none' }} className="desktop-nav-item">
             (978) 330-0895
           </a>
-          <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.65rem 1.4rem',background:'transparent',border:`1px solid ${scrolled?'#B09098':'rgba(250,246,240,0.5)'}`,color:scrolled?'#1A1218':'#FFF8FA',cursor:'pointer',borderRadius:1,transition:'all 0.3s' }}>
+          <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.65rem 1.4rem',background:'transparent',border:'1px solid #D4899A',color:'#D4899A',cursor:'pointer',borderRadius:1,transition:'all 0.3s' }}>
             Book Now
           </button>
           {/* Hamburger */}
           <button onClick={()=>setNavOpen(o=>!o)} style={{ display:'flex',flexDirection:'column',gap:5,background:'transparent',border:'none',cursor:'pointer',padding:'4px' }} className="hamburger-btn" aria-label="Menu">
             {[0,1,2].map(i=>(
-              <span key={i} style={{ display:'block',width:22,height:1.5,background:scrolled?'#2a1820':'#FFF8FA',borderRadius:2,transition:'all 0.3s',transform: navOpen&&i===0?'rotate(45deg) translate(4.5px,4.5px)':navOpen&&i===1?'scaleX(0)':navOpen&&i===2?'rotate(-45deg) translate(4.5px,-4.5px)':'none',opacity:navOpen&&i===1?0:1 }} />
+              <span key={i} style={{ display:'block',width:22,height:1.5,background:'#1A1218',borderRadius:2,transition:'all 0.3s',transform: navOpen&&i===0?'rotate(45deg) translate(4.5px,4.5px)':navOpen&&i===1?'scaleX(0)':navOpen&&i===2?'rotate(-45deg) translate(4.5px,-4.5px)':'none',opacity:navOpen&&i===1?0:1 }} />
             ))}
           </button>
         </div>
@@ -247,53 +247,52 @@ export default function HomePage() {
 
       {/* Mobile nav overlay */}
       {navOpen && (
-        <div style={{ position:'fixed',inset:0,zIndex:99,background:'rgba(31,18,25,0.97)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'2.5rem' }}>
+        <div style={{ position:'fixed',inset:0,zIndex:99,background:'rgba(255,255,255,0.97)',backdropFilter:'blur(8px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'2.5rem' }}>
           {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
             <a key={l} href={h} onClick={()=>setNavOpen(false)}
-              style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2.5rem',fontWeight:300,color:'#FFF8FA',textDecoration:'none',letterSpacing:'0.1em' }}>
+              style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2.5rem',fontWeight:300,color:'#1A1218',textDecoration:'none',letterSpacing:'0.1em' }}>
               {l}
             </a>
           ))}
           <button onClick={()=>{ setNavOpen(false); openDrawer() }}
-            style={{ marginTop:'1rem',fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.2em',textTransform:'uppercase',padding:'1rem 3rem',background:'#D4899A',color:'#1A1218',border:'none',cursor:'pointer',borderRadius:1 }}>
+            style={{ marginTop:'1rem',fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.2em',textTransform:'uppercase',padding:'1rem 3rem',background:'#D4899A',color:'white',border:'none',cursor:'pointer',borderRadius:1 }}>
             Book Now
           </button>
-          <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',color:'rgba(250,246,240,0.5)',textDecoration:'none' }}>
+          <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',color:'#B09098',textDecoration:'none' }}>
             (978) 330-0895
           </a>
         </div>
       )}
 
       {/* HERO */}
-      <div style={{ position:'relative',height:'100vh',minHeight:640,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden' }}>
-        <div style={{ position:'absolute',inset:0,background:'linear-gradient(160deg,rgba(31,18,25,0.55) 0%,rgba(31,18,25,0.2) 50%,rgba(31,18,25,0.65) 100%),radial-gradient(ellipse at 30% 60%,rgba(138,72,88,0.4) 0%,transparent 60%),linear-gradient(135deg,#2C1820 0%,#8A4858 30%,#B09098 60%,#DDB8C4 100%)' }} />
-        <div style={{ position:'absolute',width:500,height:500,borderRadius:'50%',background:'#D4899A',filter:'blur(80px)',opacity:0.25,top:-100,right:-100,animation:'drift 12s ease-in-out infinite',pointerEvents:'none' }} />
-        <div style={{ position:'absolute',width:300,height:300,borderRadius:'50%',background:'#B09098',filter:'blur(80px)',opacity:0.25,bottom:50,left:-50,animation:'drift 16s ease-in-out infinite reverse',pointerEvents:'none' }} />
+      <div style={{ position:'relative',height:'100vh',minHeight:640,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',background:'#FFFFFF' }}>
+        <div style={{ position:'absolute',width:600,height:600,borderRadius:'50%',background:'#DDB8C4',filter:'blur(120px)',opacity:0.12,top:-200,right:-100,animation:'drift 12s ease-in-out infinite',pointerEvents:'none' }} />
+        <div style={{ position:'absolute',width:400,height:400,borderRadius:'50%',background:'#EDD8DF',filter:'blur(100px)',opacity:0.18,bottom:50,left:-100,animation:'drift 16s ease-in-out infinite reverse',pointerEvents:'none' }} />
         <div style={{ position:'relative',zIndex:2,textAlign:'center',padding:'0 2rem',animation:'heroReveal 1.4s both' }}>
-          <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.4em',textTransform:'uppercase',color:'#DDB8C4',marginBottom:'1.8rem' }}>carnation spa · burlington, ma</div>
-          <h1 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(3.5rem,9vw,8rem)',fontWeight:300,lineHeight:0.95,color:'#FFF8FA',marginBottom:'1.5rem' }}>
+          <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.4em',textTransform:'uppercase',color:'#B09098',marginBottom:'1.8rem' }}>carnation spa · burlington, ma</div>
+          <h1 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(3.5rem,9vw,8rem)',fontWeight:300,lineHeight:0.95,color:'#1A1218',marginBottom:'1.5rem' }}>
             Feel Good,<br/><em style={{ fontStyle:'italic',color:'#D4899A' }}>Come Back</em>
           </h1>
-          <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'1.1rem',fontWeight:300,color:'rgba(250,246,240,0.7)',letterSpacing:'0.08em',marginBottom:'3rem',maxWidth:460,margin:'0 auto 3rem',lineHeight:1.8 }}>
+          <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'1.1rem',fontWeight:300,color:'rgba(26,18,24,0.55)',letterSpacing:'0.08em',marginBottom:'3rem',maxWidth:460,margin:'0 auto 3rem',lineHeight:1.8 }}>
             Burlington's go-to massage studio — deep tissue, Swedish, prenatal &amp; more. Licensed therapists ready to help.
           </p>
           <div style={{ display:'flex',alignItems:'center',gap:'1rem',flexWrap:'wrap',justifyContent:'center' }}>
-            <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.18em',textTransform:'uppercase',padding:'1rem 2.8rem',background:'#FFF8FA',color:'#1A1218',border:'none',cursor:'pointer',borderRadius:1,transition:'all 0.35s' }}>Book a Session</button>
-            <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'rgba(250,246,240,0.75)',border:'1px solid rgba(250,246,240,0.3)',borderRadius:1,textDecoration:'none' }}>📞 Call</a>
-            <a href="sms:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'rgba(250,246,240,0.75)',border:'1px solid rgba(250,246,240,0.3)',borderRadius:1,textDecoration:'none' }}>💬 Text Us</a>
+            <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.18em',textTransform:'uppercase',padding:'1rem 2.8rem',background:'#D4899A',color:'white',border:'none',cursor:'pointer',borderRadius:1,transition:'all 0.35s' }}>Book a Session</button>
+            <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'#8A4858',border:'1px solid #EDD8DF',borderRadius:1,textDecoration:'none' }}>📞 Call</a>
+            <a href="sms:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'#8A4858',border:'1px solid #EDD8DF',borderRadius:1,textDecoration:'none' }}>💬 Text Us</a>
           </div>
         </div>
         <div style={{ position:'absolute',bottom:'2.5rem',left:'50%',transform:'translateX(-50%)',display:'flex',flexDirection:'column',alignItems:'center',gap:'0.5rem' }}>
-          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.6rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(250,246,240,0.4)' }}>scroll</span>
-          <div style={{ width:1,height:48,background:'linear-gradient(to bottom,rgba(250,246,240,0.4),transparent)' }} />
+          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.6rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,18,24,0.3)' }}>scroll</span>
+          <div style={{ width:1,height:48,background:'linear-gradient(to bottom,rgba(26,18,24,0.2),transparent)' }} />
         </div>
       </div>
 
       {/* GALLERY */}
-      {showGallery && <section style={{ background:'#1A1218', padding:'6rem 2rem' }}>
+      {showGallery && <section style={{ background:'#FFF8FA', padding:'6rem 2rem', borderTop:'1px solid #EDD8DF' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
-          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.22em', textTransform:'uppercase', color:'#8A4858', marginBottom:'1rem', textAlign:'center' }}>Our Space</p>
-          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:300, color:'#FFF8FA', textAlign:'center', marginBottom:'3rem' }}>A sanctuary for <em style={{ fontStyle:'italic', color:'#DDB8C4' }}>rest &amp; renewal</em></h2>
+          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.22em', textTransform:'uppercase', color:'#B09098', marginBottom:'1rem', textAlign:'center' }}>Our Space</p>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:300, color:'#1A1218', textAlign:'center', marginBottom:'3rem' }}>A sanctuary for <em style={{ fontStyle:'italic', color:'#D4899A' }}>rest &amp; renewal</em></h2>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:'12px' }}>
             {[1,2,3,4,5,6].map(n=>(
               <div key={n} style={{ aspectRatio:'4/3', overflow:'hidden', borderRadius:2 }}>
@@ -307,17 +306,17 @@ export default function HomePage() {
       </section>}
 
       {/* SERVICES */}
-      <section id="services" style={{ background:'#FFF8FA',padding:'7rem 3rem' }}>
+      <section id="services" style={{ background:'#FFFFFF',padding:'7rem 3rem',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:'4rem',flexWrap:'wrap',gap:'2rem' }}>
           <div>
             <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#B09098',marginBottom:'1rem',display:'flex',alignItems:'center',gap:'1rem' }}>
               <span style={{ display:'block',width:30,height:1,background:'#DDB8C4' }}/> Our Services
             </div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#2a1820' }}>
-              Treatments tailored to <em style={{ fontStyle:'italic',color:'#8A4858' }}>how you feel</em>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#1A1218' }}>
+              Treatments tailored to <em style={{ fontStyle:'italic',color:'#D4899A' }}>how you feel</em>
             </h2>
           </div>
-          <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.8rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.8rem 2rem',background:'transparent',border:'1.5px solid #DDB8C4',color:'#8A4858',cursor:'pointer',borderRadius:1 }}>
+          <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.8rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.8rem 2rem',background:'transparent',border:'1.5px solid #D4899A',color:'#D4899A',cursor:'pointer',borderRadius:1 }}>
             Book Now →
           </button>
         </div>
@@ -344,7 +343,7 @@ export default function HomePage() {
                 }}
                 onMouseEnter={()=>setHoveredSvc(svc.id)}
                 onMouseLeave={()=>setHoveredSvc(null)}
-                style={{ borderRadius:4,overflow:'hidden',cursor:'pointer',position:'relative',background:'#2a1820',boxShadow:hovered?'0 12px 40px rgba(31,18,25,0.18)':'0 2px 12px rgba(31,18,25,0.08)',transform:hovered?'translateY(-4px)':'translateY(0)',transition:'all 0.35s cubic-bezier(0.16,1,0.3,1)' }}>
+                style={{ borderRadius:4,overflow:'hidden',cursor:'pointer',position:'relative',background:'white',border:`1.5px solid ${hovered?'#D4899A':'#EDD8DF'}`,boxShadow:hovered?'0 12px 40px rgba(212,137,154,0.12)':'0 2px 12px rgba(26,18,24,0.04)',transform:hovered?'translateY(-4px)':'translateY(0)',transition:'all 0.35s cubic-bezier(0.16,1,0.3,1)' }}>
                 {svc.imageUrl && (
                 <div style={{ height:220,overflow:'hidden',position:'relative' }}>
                   <img src={svc.imageUrl} alt={svc.name} style={{ width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.55s ease',transform:hovered?'scale(1.06)':'scale(1)' }} />
@@ -353,9 +352,9 @@ export default function HomePage() {
                       Add-on · Complimentary
                     </div>
                   )}
-                  <div style={{ position:'absolute',inset:0,background:'linear-gradient(to top,rgba(31,18,25,0.93) 0%,rgba(31,18,25,0.45) 60%,transparent 100%)',display:'flex',alignItems:'flex-end',padding:'1.2rem',opacity:hovered?1:0,transition:'opacity 0.3s' }}>
+                  <div style={{ position:'absolute',inset:0,background:'linear-gradient(to top,rgba(26,18,24,0.75) 0%,rgba(26,18,24,0.3) 60%,transparent 100%)',display:'flex',alignItems:'flex-end',padding:'1.2rem',opacity:hovered?1:0,transition:'opacity 0.3s' }}>
                     {hovered && (
-                      <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'0.85rem',lineHeight:1.75,color:'rgba(250,246,240,0.9)',margin:0,animation:'overlayUp 0.3s both' }}>
+                      <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'0.85rem',lineHeight:1.75,color:'rgba(255,255,255,0.95)',margin:0,animation:'overlayUp 0.3s both' }}>
                         {isHotStone ? 'Complimentary add-on with any massage. Click to add it to your booking.' : (svc.description ?? '')}
                       </p>
                     )}
@@ -365,7 +364,7 @@ export default function HomePage() {
                 <div style={{ padding:'1rem 1.2rem' }}>
                   <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom: hasVariants?'0.7rem':0 }}>
                     <div>
-                      <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#FFF8FA',lineHeight:1.2,marginBottom:'0.15rem' }}>{svc.name}</div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#1A1218',lineHeight:1.2,marginBottom:'0.15rem' }}>{svc.name}</div>
                       <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.68rem',letterSpacing:'0.1em',color:'#B09098',textTransform:'uppercase' }}>
                         {isHotStone ? 'Pairs with any service' : hasVariants ? 'Select duration below' : svc.durationMin>0?`${svc.durationMin} min`:'—'}
                       </div>
@@ -378,7 +377,7 @@ export default function HomePage() {
                   {hasVariants && (
                     <div style={{ display:'flex',gap:'0.4rem',flexWrap:'wrap' }}>
                       {group.variants.map(v => (
-                        <span key={v.id} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',letterSpacing:'0.08em',padding:'0.2rem 0.55rem',border:'1px solid rgba(221,184,196,0.35)',borderRadius:2,color:'#DDB8C4' }}>
+                        <span key={v.id} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.62rem',letterSpacing:'0.08em',padding:'0.2rem 0.55rem',border:'1px solid #EDD8DF',borderRadius:2,color:'#B09098' }}>
                           {v.durationMin} min · ${Number(v.price).toFixed(0)}
                         </span>
                       ))}
@@ -392,11 +391,11 @@ export default function HomePage() {
       </section>
 
       {/* WHY CHOOSE US */}
-      <section style={{ background:'#1A1218',padding:'6rem 3rem' }}>
+      <section style={{ background:'#FFF8FA',padding:'6rem 3rem',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ maxWidth:1100,margin:'0 auto' }}>
           <div style={{ textAlign:'center',marginBottom:'3.5rem' }}>
             <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#B09098',marginBottom:'1rem' }}>Why Carnation Spa</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2rem,4vw,3rem)',fontWeight:300,color:'#FFF8FA' }}>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2rem,4vw,3rem)',fontWeight:300,color:'#1A1218' }}>
               Burlington's <em style={{ fontStyle:'italic',color:'#D4899A' }}>go-to</em> massage studio
             </h2>
           </div>
@@ -409,10 +408,10 @@ export default function HomePage() {
               { icon:'💰', title:'Transparent Pricing', desc:'No hidden fees. Upfront pricing with options for every budget.' },
               { icon:'⭐', title:'4.9-Star Rated', desc:'Consistently top-rated by over 100 customers on Google and Yelp.' },
             ].map(item => (
-              <div key={item.title} style={{ background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:2,padding:'1.8rem 1.5rem' }}>
+              <div key={item.title} style={{ background:'white',border:'1px solid #EDD8DF',borderRadius:2,padding:'1.8rem 1.5rem' }}>
                 <div style={{ fontSize:'2rem',marginBottom:'1rem' }}>{item.icon}</div>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#FFF8FA',marginBottom:'0.6rem' }}>{item.title}</div>
-                <div style={{ fontSize:'0.88rem',lineHeight:1.75,color:'rgba(221,184,196,0.65)' }}>{item.desc}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:400,color:'#1A1218',marginBottom:'0.6rem' }}>{item.title}</div>
+                <div style={{ fontSize:'0.88rem',lineHeight:1.75,color:'rgba(26,18,24,0.6)' }}>{item.desc}</div>
               </div>
             ))}
           </div>
@@ -420,31 +419,31 @@ export default function HomePage() {
       </section>
 
       {/* THERAPISTS */}
-      <section id="team" style={{ background:'#2a1820',padding:'7rem 3rem' }}>
+      <section id="team" style={{ background:'#FFFFFF',padding:'7rem 3rem',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#B09098',marginBottom:'1rem',display:'flex',alignItems:'center',gap:'1rem' }}>
-          <span style={{ display:'block',width:30,height:1,background:'#B09098' }}/> Our Team
+          <span style={{ display:'block',width:30,height:1,background:'#DDB8C4' }}/> Our Team
         </div>
-        <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#FFF8FA',marginBottom:'4rem' }}>
+        <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#1A1218',marginBottom:'4rem' }}>
           Licensed therapists, <em style={{ fontStyle:'italic',color:'#D4899A' }}>clinical training</em>
         </h2>
         <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:'2rem' }}>
           {therapists.map((t,i)=>(
-            <div key={t.id} style={{ background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:2,overflow:'hidden',transition:'all 0.35s' }}
-              onMouseEnter={e=>{ const el=e.currentTarget as HTMLDivElement; el.style.background='rgba(255,255,255,0.07)'; el.style.transform='translateY(-4px)'; el.style.borderColor='rgba(212,137,154,0.3)' }}
-              onMouseLeave={e=>{ const el=e.currentTarget as HTMLDivElement; el.style.background='rgba(255,255,255,0.04)'; el.style.transform='translateY(0)'; el.style.borderColor='rgba(255,255,255,0.08)' }}>
+            <div key={t.id} style={{ background:'white',border:'1px solid #EDD8DF',borderRadius:2,overflow:'hidden',transition:'all 0.35s' }}
+              onMouseEnter={e=>{ const el=e.currentTarget as HTMLDivElement; el.style.borderColor='#D4899A'; el.style.transform='translateY(-4px)'; el.style.boxShadow='0 12px 40px rgba(212,137,154,0.1)' }}
+              onMouseLeave={e=>{ const el=e.currentTarget as HTMLDivElement; el.style.borderColor='#EDD8DF'; el.style.transform='translateY(0)'; el.style.boxShadow='none' }}>
               {t.avatarUrl && (
-                <div style={{ width:'100%',aspectRatio:'3/4',background:'linear-gradient(160deg,#8A4858 0%,#2a1820 100%)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'4rem',position:'relative',overflow:'hidden' }}>
+                <div style={{ width:'100%',aspectRatio:'3/4',background:'linear-gradient(160deg,#DDB8C4 0%,#EDD8DF 100%)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'4rem',position:'relative',overflow:'hidden' }}>
                   <img src={t.avatarUrl} alt={t.name} style={{ width:'100%',height:'100%',objectFit:'cover',position:'absolute',inset:0 }} />
-                  <div style={{ position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 60%,rgba(31,18,25,0.6) 100%)' }} />
+                  <div style={{ position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 60%,rgba(26,18,24,0.25) 100%)' }} />
                 </div>
               )}
               <div style={{ padding:'1.5rem' }}>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:400,color:'#FFF8FA',marginBottom:'0.4rem' }}>{t.name}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:400,color:'#1A1218',marginBottom:'0.4rem' }}>{t.name}</div>
                 <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#B09098',marginBottom:'0.8rem' }}>{t.title??'Therapist'}</div>
-                <div style={{ fontSize:'0.88rem',lineHeight:1.7,color:'rgba(221,184,196,0.7)',marginBottom:'1.2rem' }}>{t.bio??''}</div>
+                <div style={{ fontSize:'0.88rem',lineHeight:1.7,color:'rgba(26,18,24,0.6)',marginBottom:'1.2rem' }}>{t.bio??''}</div>
                 {t.googleReviewUrl&&(
                   <a href={t.googleReviewUrl} target="_blank" rel="noreferrer"
-                    style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.1em',color:'#D4899A',textDecoration:'none',textTransform:'uppercase',borderBottom:'1px solid rgba(212,137,154,0.3)',paddingBottom:2 }}>
+                    style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.1em',color:'#D4899A',textDecoration:'none',textTransform:'uppercase',borderBottom:'1px solid #EDD8DF',paddingBottom:2 }}>
                     ⭐ Google Reviews
                   </a>
                 )}
@@ -456,17 +455,17 @@ export default function HomePage() {
 
 
       {/* CTA */}
-      <section id="about" style={{ background:'#F8EDF0',textAlign:'center',padding:'8rem 3rem',position:'relative',overflow:'hidden' }}>
-        <div style={{ position:'absolute',fontFamily:"'Cormorant Garamond',serif",fontSize:'20vw',fontWeight:300,color:'#EDD8DF',top:'50%',left:'50%',transform:'translate(-50%,-50%)',whiteSpace:'nowrap',pointerEvents:'none',letterSpacing:'0.3em',zIndex:0 }}>CARNATION</div>
+      <section id="about" style={{ background:'#FFF8FA',textAlign:'center',padding:'8rem 3rem',position:'relative',overflow:'hidden',borderTop:'1px solid #EDD8DF' }}>
+        <div style={{ position:'absolute',fontFamily:"'Cormorant Garamond',serif",fontSize:'20vw',fontWeight:300,color:'#F0E8EC',top:'50%',left:'50%',transform:'translate(-50%,-50%)',whiteSpace:'nowrap',pointerEvents:'none',letterSpacing:'0.3em',zIndex:0 }}>CARNATION</div>
         <div style={{ position:'relative',zIndex:1 }}>
-          <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#2a1820',maxWidth:600,margin:'0 auto 2rem' }}>
-            Massage therapy <em style={{ fontStyle:'italic',color:'#8A4858' }}>worth the drive</em>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#1A1218',maxWidth:600,margin:'0 auto 2rem' }}>
+            Massage therapy <em style={{ fontStyle:'italic',color:'#D4899A' }}>worth the drive</em>
           </h2>
           <p style={{ fontSize:'1.05rem',color:'#B09098',maxWidth:480,margin:'0 auto 3rem',lineHeight:1.9 }}>
             120 Cambridge St, Suite 8 · Burlington, MA 01803<br/>(978) 330-0895
           </p>
           <div style={{ display:'flex',alignItems:'center',justifyContent:'center',gap:'1rem',flexWrap:'wrap' }}>
-            <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.18em',textTransform:'uppercase',padding:'1rem 2.8rem',background:'#2a1820',color:'#FFF8FA',border:'none',cursor:'pointer',borderRadius:1 }}>Book Your Session</button>
+            <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.18em',textTransform:'uppercase',padding:'1rem 2.8rem',background:'#D4899A',color:'white',border:'none',cursor:'pointer',borderRadius:1 }}>Book Your Session</button>
             <a href="https://maps.google.com/?q=120+Cambridge+St+STE+8+Burlington+MA+01803" target="_blank" rel="noreferrer"
               style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'#B09098',textDecoration:'none',borderBottom:'1px solid #DDB8C4',paddingBottom:2 }}>
               Get Directions ↗
@@ -476,28 +475,28 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background:'#1A1218',padding:'5rem 2.5rem 2.5rem',color:'#B09098' }}>
-        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'3rem',paddingBottom:'3.5rem',borderBottom:'1px solid rgba(255,255,255,0.07)',marginBottom:'2rem' }}>
+      <footer style={{ background:'#FFFFFF',padding:'5rem 2.5rem 2.5rem',color:'#B09098',borderTop:'1px solid #EDD8DF' }}>
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'3rem',paddingBottom:'3.5rem',borderBottom:'1px solid #EDD8DF',marginBottom:'2rem' }}>
           {/* Brand */}
           <div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2rem',fontWeight:300,color:'#FFF8FA',letterSpacing:'0.2em',marginBottom:'1rem' }}>Carnation</div>
-            <p style={{ fontSize:'0.9rem',lineHeight:1.8,color:'rgba(168,146,122,0.7)',marginBottom:'1.5rem' }}>Therapeutic massage studio in Burlington, MA — deep tissue, Swedish, prenatal &amp; more.</p>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2rem',fontWeight:300,color:'#1A1218',letterSpacing:'0.2em',marginBottom:'1rem' }}>Carnation</div>
+            <p style={{ fontSize:'0.9rem',lineHeight:1.8,color:'rgba(26,18,24,0.55)',marginBottom:'1.5rem' }}>Therapeutic massage studio in Burlington, MA — deep tissue, Swedish, prenatal &amp; more.</p>
             <div style={{ display:'flex',flexDirection:'column',gap:'0.5rem' }}>
               <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.8rem',color:'#D4899A',textDecoration:'none',letterSpacing:'0.05em' }}>📞 (978) 330-0895</a>
-              <a href="sms:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.8rem',color:'rgba(168,146,122,0.7)',textDecoration:'none',letterSpacing:'0.05em' }}>💬 Text to Book</a>
-              <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',color:'rgba(168,146,122,0.5)',lineHeight:1.7 }}>120 Cambridge St, Suite 8<br/>Burlington, MA 01803</span>
+              <a href="sms:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.8rem',color:'rgba(26,18,24,0.4)',textDecoration:'none',letterSpacing:'0.05em' }}>💬 Text to Book</a>
+              <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',color:'rgba(26,18,24,0.4)',lineHeight:1.7 }}>120 Cambridge St, Suite 8<br/>Burlington, MA 01803</span>
             </div>
           </div>
           {/* Services */}
           <div>
-            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(168,146,122,0.5)',marginBottom:'1.2rem' }}>Services</div>
+            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,18,24,0.35)',marginBottom:'1.2rem' }}>Services</div>
             <ul style={{ listStyle:'none',padding:0 }}>
               {services.slice(0,6).map(s=>(
                 <li key={s.id} style={{ marginBottom:'0.65rem' }}>
-                  <span style={{ fontSize:'0.9rem',color:'rgba(168,146,122,0.7)',cursor:'pointer',transition:'color 0.2s' }}
+                  <span style={{ fontSize:'0.9rem',color:'rgba(26,18,24,0.55)',cursor:'pointer',transition:'color 0.2s' }}
                     onClick={openDrawer}
                     onMouseEnter={e=>(e.currentTarget.style.color='#D4899A')}
-                    onMouseLeave={e=>(e.currentTarget.style.color='rgba(168,146,122,0.7)')}>
+                    onMouseLeave={e=>(e.currentTarget.style.color='rgba(26,18,24,0.55)')}>
                     {s.name}
                   </span>
                 </li>
@@ -506,41 +505,41 @@ export default function HomePage() {
           </div>
           {/* Hours */}
           <div>
-            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(168,146,122,0.5)',marginBottom:'1.2rem' }}>Hours</div>
-            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',lineHeight:2,color:'rgba(168,146,122,0.6)' }}>
-              Mon – Fri<br/><span style={{ color:'rgba(168,146,122,0.9)' }}>9:00 AM – 9:00 PM</span><br/>
-              Sat – Sun<br/><span style={{ color:'rgba(168,146,122,0.9)' }}>9:00 AM – 8:00 PM</span>
+            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,18,24,0.35)',marginBottom:'1.2rem' }}>Hours</div>
+            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',lineHeight:2,color:'rgba(26,18,24,0.45)' }}>
+              Mon – Fri<br/><span style={{ color:'rgba(26,18,24,0.7)' }}>9:00 AM – 9:00 PM</span><br/>
+              Sat – Sun<br/><span style={{ color:'rgba(26,18,24,0.7)' }}>9:00 AM – 8:00 PM</span>
             </div>
           </div>
           {/* Book CTA */}
           <div style={{ display:'flex',flexDirection:'column',gap:'0.75rem' }}>
-            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(168,146,122,0.5)',marginBottom:'0.5rem' }}>Book Now</div>
-            <button onClick={openDrawer} style={{ padding:'0.85rem 1.5rem',background:'#D4899A',color:'#1A1218',border:'none',borderRadius:1,fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',cursor:'pointer',textAlign:'center' }}>
+            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,18,24,0.35)',marginBottom:'0.5rem' }}>Book Now</div>
+            <button onClick={openDrawer} style={{ padding:'0.85rem 1.5rem',background:'#D4899A',color:'white',border:'none',borderRadius:1,fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',cursor:'pointer',textAlign:'center' }}>
               Book Online →
             </button>
-            <a href="tel:9783300895" style={{ padding:'0.85rem 1.5rem',background:'transparent',color:'rgba(168,146,122,0.7)',border:'1px solid rgba(168,146,122,0.2)',borderRadius:1,fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',textDecoration:'none',textAlign:'center' }}>
+            <a href="tel:9783300895" style={{ padding:'0.85rem 1.5rem',background:'transparent',color:'rgba(26,18,24,0.55)',border:'1px solid #EDD8DF',borderRadius:1,fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',textDecoration:'none',textAlign:'center' }}>
               Call (978) 330-0895
             </a>
-            <a href="sms:9783300895" style={{ padding:'0.85rem 1.5rem',background:'transparent',color:'rgba(168,146,122,0.7)',border:'1px solid rgba(168,146,122,0.2)',borderRadius:1,fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',textDecoration:'none',textAlign:'center' }}>
+            <a href="sms:9783300895" style={{ padding:'0.85rem 1.5rem',background:'transparent',color:'rgba(26,18,24,0.55)',border:'1px solid #EDD8DF',borderRadius:1,fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',textTransform:'uppercase',textDecoration:'none',textAlign:'center' }}>
               💬 Text Us
             </a>
           </div>
         </div>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'1rem' }}>
-          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.7rem',letterSpacing:'0.1em',color:'rgba(168,146,122,0.35)' }}>© 2025 Carnation Spa LLC. · Burlington, MA</span>
-          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.7rem',letterSpacing:'0.08em',color:'rgba(168,146,122,0.35)' }}>
-            <a href="/privacy" style={{ color:'rgba(168,146,122,0.35)',textDecoration:'none',borderBottom:'1px solid rgba(168,146,122,0.15)',paddingBottom:1 }}>Privacy Policy</a>
+          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.7rem',letterSpacing:'0.1em',color:'rgba(26,18,24,0.3)' }}>© 2025 Carnation Spa LLC. · Burlington, MA</span>
+          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.7rem',letterSpacing:'0.08em',color:'rgba(26,18,24,0.3)' }}>
+            <a href="/privacy" style={{ color:'rgba(26,18,24,0.3)',textDecoration:'none',borderBottom:'1px solid rgba(26,18,24,0.15)',paddingBottom:1 }}>Privacy Policy</a>
             {' '}&nbsp;·&nbsp;{' '}
-            <a href="/terms" style={{ color:'rgba(168,146,122,0.35)',textDecoration:'none',borderBottom:'1px solid rgba(168,146,122,0.15)',paddingBottom:1 }}>Terms &amp; Conditions</a>
+            <a href="/terms" style={{ color:'rgba(26,18,24,0.3)',textDecoration:'none',borderBottom:'1px solid rgba(26,18,24,0.15)',paddingBottom:1 }}>Terms &amp; Conditions</a>
           </span>
         </div>
       </footer>
 
       {/* DRAWER OVERLAY */}
-      <div onClick={closeDrawer} style={{ position:'fixed',inset:0,zIndex:500,background:open?'rgba(31,18,25,0.6)':'rgba(31,18,25,0)',backdropFilter:open?'blur(4px)':'none',pointerEvents:open?'all':'none',transition:'background 0.45s,backdrop-filter 0.45s' }} />
+      <div onClick={closeDrawer} style={{ position:'fixed',inset:0,zIndex:500,background:open?'rgba(26,18,24,0.35)':'rgba(26,18,24,0)',backdropFilter:open?'blur(4px)':'none',pointerEvents:open?'all':'none',transition:'background 0.45s,backdrop-filter 0.45s' }} />
 
       {/* DRAWER PANEL */}
-      <div style={{ position:'fixed',top:0,right:0,bottom:0,zIndex:501,width:'min(480px,100vw)',background:'#FFF8FA',transform:open?'translateX(0)':'translateX(100%)',transition:'transform 0.55s cubic-bezier(0.16,1,0.3,1)',display:'flex',flexDirection:'column',overflow:'hidden',fontFamily:"'Jost',sans-serif" }}>
+      <div style={{ position:'fixed',top:0,right:0,bottom:0,zIndex:501,width:'min(480px,100vw)',background:'#FFFFFF',transform:open?'translateX(0)':'translateX(100%)',transition:'transform 0.55s cubic-bezier(0.16,1,0.3,1)',display:'flex',flexDirection:'column',overflow:'hidden',fontFamily:"'Jost',sans-serif",borderLeft:'1px solid #EDD8DF' }}>
         {/* Header */}
         <div style={{ padding:'1.8rem 2rem 1.5rem',borderBottom:'1px solid #EDD8DF',display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexShrink:0 }}>
           <div>
