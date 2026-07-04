@@ -298,7 +298,7 @@ export default function HomePage() {
           <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.22em', textTransform:'uppercase', color:'#B09098', marginBottom:'1rem', textAlign:'center' }}>Our Space</p>
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:300, color:'#1A1218', textAlign:'center', marginBottom:'3rem' }}>A sanctuary for <em style={{ fontStyle:'italic', color:'#D4899A' }}>rest &amp; renewal</em></h2>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:'12px' }}>
-            {[1,2,3,4,5].map(n=>(
+            {[1,2,3].map(n=>(
               <div key={n} style={{ aspectRatio:'4/3', overflow:'hidden', borderRadius:2 }}>
                 <img src={`/${n}.jpg`} alt={`Carnation Spa ${n}`} style={{ width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.5s ease' }}
                   onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.05)')}
