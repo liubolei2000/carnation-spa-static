@@ -209,8 +209,8 @@ export default function HomePage() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
         html{scroll-behavior:smooth}
-        body{background:#FFFFFF;color:#1A1218;font-family:'Jost',sans-serif;font-weight:300;overflow-x:hidden;font-size:17px}
-        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#FFFFFF}::-webkit-scrollbar-thumb{background:#DDB8C4;border-radius:2px}
+        body{background:#F3F0EE;color:#1A1218;font-family:'Jost',sans-serif;font-weight:300;overflow-x:hidden;font-size:17px}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#F3F0EE}::-webkit-scrollbar-thumb{background:#DDB8C4;border-radius:2px}
         @keyframes heroReveal{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
         @keyframes overlayUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -219,7 +219,7 @@ export default function HomePage() {
       `}} />
 
       {/* NAV */}
-      <nav style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',justifyContent:'space-between',alignItems:'center', padding:scrolled?'1rem 1.5rem':'1.5rem 2rem', background:scrolled?'rgba(255,255,255,0.95)':'rgba(255,255,255,0)', backdropFilter:scrolled?'blur(12px)':'none', borderBottom:scrolled?'1px solid #EDD8DF':'none', transition:'all 0.4s' }}>
+      <nav style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',justifyContent:'space-between',alignItems:'center', padding:scrolled?'1rem 1.5rem':'1.5rem 2rem', background:scrolled?'rgba(243,240,238,0.95)':'rgba(243,240,238,0)', backdropFilter:scrolled?'blur(12px)':'none', borderBottom:scrolled?'1px solid #EDD8DF':'none', transition:'all 0.4s' }}>
         <a href="#" style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,letterSpacing:'0.2em',color:scrolled?'#1A1218':'#FFF8FA',textDecoration:'none' }}>Carnation</a>
         {/* Desktop nav */}
         <div style={{ display:'flex',alignItems:'center',gap:'2rem' }}>
@@ -247,7 +247,7 @@ export default function HomePage() {
 
       {/* Mobile nav overlay */}
       {navOpen && (
-        <div style={{ position:'fixed',inset:0,zIndex:99,background:'rgba(255,255,255,0.97)',backdropFilter:'blur(8px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'2.5rem' }}>
+        <div style={{ position:'fixed',inset:0,zIndex:99,background:'rgba(243,240,238,0.97)',backdropFilter:'blur(8px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'2.5rem' }}>
           {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
             <a key={l} href={h} onClick={()=>setNavOpen(false)}
               style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2.5rem',fontWeight:300,color:'#1A1218',textDecoration:'none',letterSpacing:'0.1em' }}>
@@ -293,7 +293,7 @@ export default function HomePage() {
       </div>
 
       {/* GALLERY */}
-      {showGallery && <section style={{ background:'#FFF8FA', padding:'6rem 2rem', borderTop:'1px solid #EDD8DF' }}>
+      {showGallery && <section style={{ background:'#EDE5E9', padding:'6rem 2rem', borderTop:'1px solid #EDD8DF' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.22em', textTransform:'uppercase', color:'#B09098', marginBottom:'1rem', textAlign:'center' }}>Our Space</p>
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:300, color:'#1A1218', textAlign:'center', marginBottom:'3rem' }}>A sanctuary for <em style={{ fontStyle:'italic', color:'#D4899A' }}>rest &amp; renewal</em></h2>
@@ -310,7 +310,7 @@ export default function HomePage() {
       </section>}
 
       {/* SERVICES */}
-      <section id="services" style={{ background:'#FFFFFF',padding:'7rem 3rem',borderTop:'1px solid #EDD8DF' }}>
+      <section id="services" style={{ background:'#F3F0EE',padding:'7rem 3rem',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:'4rem',flexWrap:'wrap',gap:'2rem' }}>
           <div>
             <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#B09098',marginBottom:'1rem',display:'flex',alignItems:'center',gap:'1rem' }}>
@@ -395,7 +395,7 @@ export default function HomePage() {
       </section>
 
       {/* WHY CHOOSE US */}
-      <section style={{ background:'#FFF8FA',padding:'6rem 3rem',borderTop:'1px solid #EDD8DF' }}>
+      <section style={{ background:'#EDE5E9',padding:'6rem 3rem',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ maxWidth:1100,margin:'0 auto' }}>
           <div style={{ textAlign:'center',marginBottom:'3.5rem' }}>
             <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#B09098',marginBottom:'1rem' }}>Why Carnation Spa</div>
@@ -423,7 +423,7 @@ export default function HomePage() {
       </section>
 
       {/* THERAPISTS */}
-      <section id="team" style={{ background:'#FFFFFF',padding:'7rem 3rem',borderTop:'1px solid #EDD8DF' }}>
+      <section id="team" style={{ background:'#F3F0EE',padding:'7rem 3rem',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.35em',textTransform:'uppercase',color:'#B09098',marginBottom:'1rem',display:'flex',alignItems:'center',gap:'1rem' }}>
           <span style={{ display:'block',width:30,height:1,background:'#DDB8C4' }}/> Our Team
         </div>
@@ -459,7 +459,7 @@ export default function HomePage() {
 
 
       {/* CTA */}
-      <section id="about" style={{ background:'#FFF8FA',textAlign:'center',padding:'8rem 3rem',position:'relative',overflow:'hidden',borderTop:'1px solid #EDD8DF' }}>
+      <section id="about" style={{ background:'#EDE5E9',textAlign:'center',padding:'8rem 3rem',position:'relative',overflow:'hidden',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ position:'absolute',fontFamily:"'Cormorant Garamond',serif",fontSize:'20vw',fontWeight:300,color:'#F0E8EC',top:'50%',left:'50%',transform:'translate(-50%,-50%)',whiteSpace:'nowrap',pointerEvents:'none',letterSpacing:'0.3em',zIndex:0 }}>CARNATION</div>
         <div style={{ position:'relative',zIndex:1 }}>
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(2.2rem,4vw,3.8rem)',fontWeight:300,lineHeight:1.1,color:'#1A1218',maxWidth:600,margin:'0 auto 2rem' }}>
@@ -479,7 +479,7 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background:'#FFFFFF',padding:'5rem 2.5rem 2.5rem',color:'#B09098',borderTop:'1px solid #EDD8DF' }}>
+      <footer style={{ background:'#F3F0EE',padding:'5rem 2.5rem 2.5rem',color:'#B09098',borderTop:'1px solid #EDD8DF' }}>
         <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'3rem',paddingBottom:'3.5rem',borderBottom:'1px solid #EDD8DF',marginBottom:'2rem' }}>
           {/* Brand */}
           <div>
@@ -543,7 +543,7 @@ export default function HomePage() {
       <div onClick={closeDrawer} style={{ position:'fixed',inset:0,zIndex:500,background:open?'rgba(26,18,24,0.35)':'rgba(26,18,24,0)',backdropFilter:open?'blur(4px)':'none',pointerEvents:open?'all':'none',transition:'background 0.45s,backdrop-filter 0.45s' }} />
 
       {/* DRAWER PANEL */}
-      <div style={{ position:'fixed',top:0,right:0,bottom:0,zIndex:501,width:'min(480px,100vw)',background:'#FFFFFF',transform:open?'translateX(0)':'translateX(100%)',transition:'transform 0.55s cubic-bezier(0.16,1,0.3,1)',display:'flex',flexDirection:'column',overflow:'hidden',fontFamily:"'Jost',sans-serif",borderLeft:'1px solid #EDD8DF' }}>
+      <div style={{ position:'fixed',top:0,right:0,bottom:0,zIndex:501,width:'min(480px,100vw)',background:'#F3F0EE',transform:open?'translateX(0)':'translateX(100%)',transition:'transform 0.55s cubic-bezier(0.16,1,0.3,1)',display:'flex',flexDirection:'column',overflow:'hidden',fontFamily:"'Jost',sans-serif",borderLeft:'1px solid #EDD8DF' }}>
         {/* Header */}
         <div style={{ padding:'1.8rem 2rem 1.5rem',borderBottom:'1px solid #EDD8DF',display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexShrink:0 }}>
           <div>

@@ -97,20 +97,20 @@ export default function ManagePage() {
 
   const pageStyle: React.CSSProperties = {
     minHeight: '100vh',
-    background: '#faf6f0',
+    background: '#F3F0EE',
     fontFamily: "'Jost', sans-serif",
     fontWeight: 300,
   }
 
   const css = `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#faf6f0;font-family:'Jost',sans-serif;font-weight:300;color:#1c1712}`
+  body{background:#F3F0EE;font-family:'Jost',sans-serif;font-weight:300;color:#1A1218}`
 
   if (loading) return (
     <>
       <style dangerouslySetInnerHTML={{__html:css}}/>
       <div style={{...pageStyle, display:'flex', alignItems:'center', justifyContent:'center'}}>
-        <div style={{ textAlign:'center', color:'#a8927a' }}>
+        <div style={{ textAlign:'center', color:'#B09098' }}>
           <div style={{ fontSize:'2rem', marginBottom:'1rem' }}>🌸</div>
           <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.8rem', letterSpacing:'0.1em' }}>Loading your booking…</div>
         </div>
@@ -124,9 +124,9 @@ export default function ManagePage() {
       <div style={{...pageStyle, display:'flex', alignItems:'center', justifyContent:'center'}}>
         <div style={{ textAlign:'center', maxWidth:360, padding:'2rem' }}>
           <div style={{ fontSize:'2.5rem', marginBottom:'1rem' }}>🔍</div>
-          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.8rem', fontWeight:300, color:'#2d2318', marginBottom:'1rem' }}>Booking Not Found</h2>
-          <p style={{ color:'#a8927a', lineHeight:1.8, marginBottom:'2rem' }}>{error}</p>
-          <a href="/" style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.8rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#2d2318', textDecoration:'none', borderBottom:'1px solid #c8b49a', paddingBottom:2 }}>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.8rem', fontWeight:300, color:'#1A1218', marginBottom:'1rem' }}>Booking Not Found</h2>
+          <p style={{ color:'#B09098', lineHeight:1.8, marginBottom:'2rem' }}>{error}</p>
+          <a href="/" style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.8rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#1A1218', textDecoration:'none', borderBottom:'1px solid #DDB8C4', paddingBottom:2 }}>
             Back to Homepage
           </a>
         </div>
@@ -140,9 +140,9 @@ export default function ManagePage() {
     <>
       <style dangerouslySetInnerHTML={{__html:css}}/>
       {/* Nav */}
-      <nav style={{ background:'rgba(244,237,227,0.92)', backdropFilter:'blur(12px)', borderBottom:'1px solid #e8ddd0', padding:'1rem 2rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <a href="/" style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.4rem', fontWeight:400, letterSpacing:'0.2em', color:'#1c1712', textDecoration:'none' }}>Carnation</a>
-        <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#a8927a' }}>Manage Booking</span>
+      <nav style={{ background:'rgba(243,240,238,0.95)', backdropFilter:'blur(12px)', borderBottom:'1px solid #EDD8DF', padding:'1rem 2rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <a href="/" style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.4rem', fontWeight:400, letterSpacing:'0.2em', color:'#1A1218', textDecoration:'none' }}>Carnation</a>
+        <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#B09098' }}>Manage Booking</span>
       </nav>
 
       <div style={{ maxWidth:560, margin:'0 auto', padding:'3rem 1.5rem' }}>
@@ -151,8 +151,8 @@ export default function ManagePage() {
         {view === 'detail' && appt && (
           <>
             <div style={{ textAlign:'center', marginBottom:'2.5rem' }}>
-              <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.35em', textTransform:'uppercase', color:'#a8927a', marginBottom:'0.8rem' }}>your appointment</div>
-              <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2.5rem', fontWeight:300, color:'#2d2318', lineHeight:1.1 }}>Hello, {appt.customerName.split(' ')[0]}</h1>
+              <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.35em', textTransform:'uppercase', color:'#B09098', marginBottom:'0.8rem' }}>your appointment</div>
+              <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2.5rem', fontWeight:300, color:'#1A1218', lineHeight:1.1 }}>Hello, {appt.customerName.split(' ')[0]}</h1>
             </div>
 
             {/* Status badge */}
@@ -168,10 +168,10 @@ export default function ManagePage() {
             )}
 
             {/* Booking card */}
-            <div style={{ background:'white', border:'1.5px solid #e8ddd0', borderRadius:8, overflow:'hidden', marginBottom:'1.5rem' }}>
-              <div style={{ background:'linear-gradient(135deg,#f4ede3,#e8ddd0)', padding:'1.5rem 1.8rem', borderBottom:'1px solid #e8ddd0' }}>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.5rem', fontWeight:400, color:'#2d2318', marginBottom:'0.3rem' }}>{appt.service.name}</div>
-                <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#a8927a', letterSpacing:'0.1em', textTransform:'uppercase' }}>{appt.service.durationMin} min · ${Number(appt.service.price).toFixed(0)}</div>
+            <div style={{ background:'white', border:'1.5px solid #EDD8DF', borderRadius:8, overflow:'hidden', marginBottom:'1.5rem' }}>
+              <div style={{ background:'linear-gradient(135deg,#FFF8FA,#EDD8DF)', padding:'1.5rem 1.8rem', borderBottom:'1px solid #EDD8DF' }}>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.5rem', fontWeight:400, color:'#1A1218', marginBottom:'0.3rem' }}>{appt.service.name}</div>
+                <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#B09098', letterSpacing:'0.1em', textTransform:'uppercase' }}>{appt.service.durationMin} min · ${Number(appt.service.price).toFixed(0)}</div>
               </div>
               <div style={{ padding:'1.5rem 1.8rem' }}>
                 {[
@@ -179,15 +179,15 @@ export default function ManagePage() {
                   ['🧘 Therapist', `${appt.therapist.name}${appt.therapist.title ? ' · ' + appt.therapist.title : ''}`],
                   ['📍 Location', '120 Cambridge St, Suite 8\nBurlington, MA 01803'],
                 ].map(([k,v]) => (
-                  <div key={k as string} style={{ display:'flex', gap:'1rem', padding:'0.75rem 0', borderBottom:'1px solid #f4ede3' }}>
-                    <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#a8927a', textTransform:'uppercase', letterSpacing:'0.08em', minWidth:100 }}>{k}</span>
-                    <span style={{ fontSize:'0.9rem', color:'#2d2318', lineHeight:1.6, whiteSpace:'pre-line' }}>{v}</span>
+                  <div key={k as string} style={{ display:'flex', gap:'1rem', padding:'0.75rem 0', borderBottom:'1px solid #F5F0F2' }}>
+                    <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#B09098', textTransform:'uppercase', letterSpacing:'0.08em', minWidth:100 }}>{k}</span>
+                    <span style={{ fontSize:'0.9rem', color:'#1A1218', lineHeight:1.6, whiteSpace:'pre-line' }}>{v}</span>
                   </div>
                 ))}
                 {appt.notes && (
                   <div style={{ display:'flex', gap:'1rem', padding:'0.75rem 0' }}>
-                    <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#a8927a', textTransform:'uppercase', letterSpacing:'0.08em', minWidth:100 }}>📝 Notes</span>
-                    <span style={{ fontSize:'0.9rem', color:'#6b4f35', lineHeight:1.6 }}>{appt.notes}</span>
+                    <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#B09098', textTransform:'uppercase', letterSpacing:'0.08em', minWidth:100 }}>📝 Notes</span>
+                    <span style={{ fontSize:'0.9rem', color:'#8A4858', lineHeight:1.6 }}>{appt.notes}</span>
                   </div>
                 )}
               </div>
@@ -197,7 +197,7 @@ export default function ManagePage() {
             {isCancellable && (
               <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem' }}>
                 <button onClick={() => setView('reschedule')}
-                  style={{ width:'100%', padding:'1rem', background:'#2d2318', color:'#faf6f0', border:'none', borderRadius:6, fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer' }}>
+                  style={{ width:'100%', padding:'1rem', background:'#D4899A', color:'white', border:'none', borderRadius:6, fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer' }}>
                   Reschedule Appointment
                 </button>
                 <button onClick={cancel} disabled={submitting}
@@ -228,23 +228,23 @@ export default function ManagePage() {
               <button onClick={() => setView('detail')} style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.1em', color:'#a8927a', background:'none', border:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:'0.4rem', marginBottom:'1.5rem' }}>
                 ← Back
               </button>
-              <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.35em', textTransform:'uppercase', color:'#a8927a', marginBottom:'0.5rem' }}>reschedule</div>
-              <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, color:'#2d2318' }}>Choose a new time</h2>
+              <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.35em', textTransform:'uppercase', color:'#B09098', marginBottom:'0.5rem' }}>reschedule</div>
+              <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, color:'#1A1218' }}>Choose a new time</h2>
             </div>
 
-            <div style={{ background:'#f4ede3', border:'1px solid #e8ddd0', borderRadius:6, padding:'0.9rem 1.2rem', marginBottom:'1.5rem', fontSize:'0.85rem', color:'#6b4f35' }}>
+            <div style={{ background:'#F5F0F2', border:'1px solid #EDD8DF', borderRadius:6, padding:'0.9rem 1.2rem', marginBottom:'1.5rem', fontSize:'0.85rem', color:'#8A4858' }}>
               Current: {fmtShort(appt.appointmentAt)} with {appt.therapist.name}
             </div>
 
             {/* Date selection */}
-            <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#a8927a', marginBottom:'0.8rem' }}>Select a date</div>
+            <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#B09098', marginBottom:'0.8rem' }}>Select a date</div>
             <div style={{ display:'flex', gap:'0.5rem', flexWrap:'wrap', marginBottom:'2rem' }}>
               {days.map((d,i) => {
                 const iso = d.toISOString().split('T')[0]
                 const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]
                 return (
                   <div key={iso} onClick={() => setSelDate(iso)}
-                    style={{ padding:'0.5rem 0.8rem', border:`1.5px solid ${selDate===iso?'#2d2318':'#e8ddd0'}`, fontFamily:"'DM Mono',monospace", fontSize:'0.7rem', color:selDate===iso?'#faf6f0':'#6b4f35', cursor:'pointer', background:selDate===iso?'#2d2318':'white', borderRadius:1, textAlign:'center', minWidth:52, transition:'all 0.2s' }}>
+                    style={{ padding:'0.5rem 0.8rem', border:`1.5px solid ${selDate===iso?'#1A1218':'#EDD8DF'}`, fontFamily:"'DM Mono',monospace", fontSize:'0.7rem', color:selDate===iso?'white':'#8A4858', cursor:'pointer', background:selDate===iso?'#1A1218':'white', borderRadius:1, textAlign:'center', minWidth:52, transition:'all 0.2s' }}>
                     <div>{dow}</div><div>{d.getDate()}</div>
                   </div>
                 )
@@ -254,26 +254,26 @@ export default function ManagePage() {
             {/* Time slots */}
             {selDate && (
               <>
-                <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#a8927a', marginBottom:'0.8rem' }}>
+                <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', letterSpacing:'0.15em', textTransform:'uppercase', color:'#B09098', marginBottom:'0.8rem' }}>
                   Available times {loadingAvail && '— loading…'}
                 </div>
                 {!loadingAvail && avail.length === 0 && (
-                  <div style={{ color:'#a8927a', fontSize:'0.9rem', padding:'1rem 0' }}>No availability for this date.</div>
+                  <div style={{ color:'#B09098', fontSize:'0.9rem', padding:'1rem 0' }}>No availability for this date.</div>
                 )}
                 {avail.map((t,ti) => (
                   <div key={t.therapistId} style={{ marginBottom:'1.5rem' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:'0.8rem', marginBottom:'0.6rem' }}>
-                      <div style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg,#c8b49a,#6b4f35)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1rem' }}>
+                      <div style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg,#DDB8C4,#8A4858)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1rem' }}>
                         {TAVATAR[ti%TAVATAR.length]}
                       </div>
-                      <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.05rem', color:'#2d2318' }}>{t.therapistName}</span>
+                      <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.05rem', color:'#1A1218' }}>{t.therapistName}</span>
                     </div>
                     <div style={{ display:'flex', flexWrap:'wrap', gap:'0.5rem' }}>
                       {t.slots.map(slot => {
                         const sel = selTherapist===t.therapistId && selTime===slot.time
                         return (
                           <div key={slot.time} onClick={() => { if (!slot.available) return; setSelTherapist(t.therapistId); setSelTime(slot.time) }}
-                            style={{ padding:'0.48rem 0.9rem', border:`1.5px solid ${sel?'#2d2318':'#e8ddd0'}`, fontFamily:"'DM Mono',monospace", fontSize:'0.8rem', color:!slot.available?'rgba(107,79,53,0.2)':sel?'#faf6f0':'#6b4f35', cursor:slot.available?'pointer':'not-allowed', background:sel?'#2d2318':'white', borderRadius:1, opacity:slot.available?1:0.4, textDecoration:slot.available?'none':'line-through', transition:'all 0.2s' }}>
+                            style={{ padding:'0.48rem 0.9rem', border:`1.5px solid ${sel?'#1A1218':'#EDD8DF'}`, fontFamily:"'DM Mono',monospace", fontSize:'0.8rem', color:!slot.available?'rgba(138,72,88,0.2)':sel?'white':'#8A4858', cursor:slot.available?'pointer':'not-allowed', background:sel?'#1A1218':'white', borderRadius:1, opacity:slot.available?1:0.4, textDecoration:slot.available?'none':'line-through', transition:'all 0.2s' }}>
                             {slot.time}
                           </div>
                         )
@@ -291,7 +291,7 @@ export default function ManagePage() {
             )}
 
             <button onClick={reschedule} disabled={!selDate||!selTherapist||!selTime||submitting}
-              style={{ width:'100%', padding:'1rem', background:'#2d2318', color:'#faf6f0', border:'none', borderRadius:6, fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer', opacity:(!selDate||!selTherapist||!selTime||submitting)?0.45:1, marginTop:'1rem' }}>
+              style={{ width:'100%', padding:'1rem', background:'#D4899A', color:'white', border:'none', borderRadius:6, fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', cursor:'pointer', opacity:(!selDate||!selTherapist||!selTime||submitting)?0.45:1, marginTop:'1rem' }}>
               {submitting ? 'Rescheduling…' : 'Confirm New Time'}
             </button>
           </>
@@ -301,11 +301,11 @@ export default function ManagePage() {
         {view === 'cancelled' && (
           <div style={{ textAlign:'center', padding:'3rem 1rem' }}>
             <div style={{ fontSize:'3rem', marginBottom:'1.5rem' }}>✓</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, color:'#2d2318', marginBottom:'1rem' }}>Appointment Cancelled</h2>
-            <p style={{ color:'#a8927a', lineHeight:1.8, marginBottom:'2rem', maxWidth:320, margin:'0 auto 2rem' }}>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, color:'#1A1218', marginBottom:'1rem' }}>Appointment Cancelled</h2>
+            <p style={{ color:'#B09098', lineHeight:1.8, marginBottom:'2rem', maxWidth:320, margin:'0 auto 2rem' }}>
               Your appointment has been cancelled. We hope to see you again soon.
             </p>
-            <a href="/" style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', padding:'0.9rem 2.4rem', background:'#2d2318', color:'#faf6f0', textDecoration:'none', borderRadius:6, display:'inline-block' }}>
+            <a href="/" style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', padding:'0.9rem 2.4rem', background:'#D4899A', color:'white', textDecoration:'none', borderRadius:6, display:'inline-block' }}>
               Book Again
             </a>
           </div>
@@ -315,13 +315,13 @@ export default function ManagePage() {
         {view === 'done' && appt && (
           <div style={{ textAlign:'center', padding:'3rem 1rem' }}>
             <div style={{ fontSize:'3rem', marginBottom:'1.5rem' }}>🌸</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, color:'#2d2318', marginBottom:'1rem' }}>All Rescheduled!</h2>
-            <p style={{ color:'#a8927a', lineHeight:1.8, marginBottom:'1.5rem' }}>Your new appointment time:</p>
-            <div style={{ background:'white', border:'1.5px solid #e8ddd0', borderRadius:8, padding:'1.2rem', marginBottom:'2rem', maxWidth:360, margin:'0 auto 2rem' }}>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.3rem', color:'#2d2318', marginBottom:'0.5rem' }}>{fmt(appt.appointmentAt)}</div>
-              <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#a8927a', textTransform:'uppercase', letterSpacing:'0.1em' }}>{appt.therapist.name} · {appt.service.name}</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, color:'#1A1218', marginBottom:'1rem' }}>All Rescheduled!</h2>
+            <p style={{ color:'#B09098', lineHeight:1.8, marginBottom:'1.5rem' }}>Your new appointment time:</p>
+            <div style={{ background:'white', border:'1.5px solid #EDD8DF', borderRadius:8, padding:'1.2rem', marginBottom:'2rem', maxWidth:360, margin:'0 auto 2rem' }}>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:'1.3rem', color:'#1A1218', marginBottom:'0.5rem' }}>{fmt(appt.appointmentAt)}</div>
+              <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'#B09098', textTransform:'uppercase', letterSpacing:'0.1em' }}>{appt.therapist.name} · {appt.service.name}</div>
             </div>
-            <a href="/" style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', padding:'0.9rem 2.4rem', background:'#2d2318', color:'#faf6f0', textDecoration:'none', borderRadius:6, display:'inline-block' }}>
+            <a href="/" style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.82rem', letterSpacing:'0.15em', textTransform:'uppercase', padding:'0.9rem 2.4rem', background:'#D4899A', color:'white', textDecoration:'none', borderRadius:6, display:'inline-block' }}>
               Back to Homepage
             </a>
           </div>
