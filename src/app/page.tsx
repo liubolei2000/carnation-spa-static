@@ -117,6 +117,21 @@ export default function HomePage() {
     return ()=>clearTimeout(timerRef.current)
   }, [codeTimer])
 
+  // Restore cooldown timer from localStorage when phone number is entered/changed
+  useEffect(() => {
+    if (!phone) return
+    try {
+      const raw = localStorage.getItem('sms_cooldown')
+      if (!raw) return
+      const { phone: savedPhone, sentAt } = JSON.parse(raw)
+      const digits = (p: string) => p.replace(/\D/g, '')
+      if (digits(savedPhone) !== digits(phone)) return
+      const remaining = Math.ceil((60000 - (Date.now() - sentAt)) / 1000)
+      if (remaining > 0) { setCodeTimer(remaining); setCodeSent(true) }
+      else localStorage.removeItem('sms_cooldown')
+    } catch {}
+  }, [phone])
+
   // Initialize Turnstile invisible widget when user reaches step 3
   useEffect(() => {
     if (step !== 3) return
@@ -174,7 +189,10 @@ export default function HomePage() {
         method:'POST', headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ phone, purpose:'BOOKING', cfToken })
       })
-      if (res.ok) { setCodeSent(true); setCodeTimer(60) }
+      if (res.ok) {
+        setCodeSent(true); setCodeTimer(60)
+        localStorage.setItem('sms_cooldown', JSON.stringify({ phone, sentAt: Date.now() }))
+      }
       else {
         const d = await res.json()
         setError(d.error==='RATE_LIMITED'?'Too many requests. Wait a moment.':d.error==='BOT_DETECTED'?'Verification failed. Please try again.':'Failed to send code. Check phone number.')
