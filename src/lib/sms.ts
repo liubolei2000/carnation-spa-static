@@ -145,11 +145,11 @@ export async function sendVerificationCode(
   if (IS_DEV) {
     console.log(`\n🔑 [DEV] 验证码: ${code}  (开发模式固定值)\n`)
   } else {
-    const sent = await sendSms(phone, `[Carnation Spa] Your verification code is: ${code}  (valid 10 min)`)
-    if (!sent) {
-      console.error('[SMS Code] Failed to send code to', phone)
-      return { success: false, error: 'SEND_FAILED' }
-    }
+    // Fire-and-forget: return immediately after DB record is created,
+    // SMS delivery happens in background to eliminate response latency
+    sendSms(phone, `[Carnation Spa] Your verification code is: ${code}  (valid 10 min)`)
+      .then(ok => { if (!ok) console.error('[SMS Code] Failed to send to', phone) })
+      .catch(err => console.error('[SMS Code] Error sending to', phone, err))
   }
   return { success: true }
 }

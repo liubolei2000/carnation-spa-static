@@ -30,20 +30,19 @@ export async function POST(req: NextRequest) {
     const { phone, purpose, cfToken } = await req.json()
     if (!phone) return NextResponse.json({ error: 'MISSING_PHONE' }, { status: 400 })
 
-    // Verify Turnstile (only enforced when secret key is configured)
-    const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? ''
-    const human = await verifyTurnstile(cfToken ?? '', ip)
-    if (!human) return NextResponse.json({ error: 'BOT_DETECTED' }, { status: 403 })
-
     let normalized: string
     try { normalized = normalizePhone(phone) }
     catch { return NextResponse.json({ error: 'INVALID_PHONE' }, { status: 400 }) }
 
-    const result = await sendVerificationCode(
-      normalized,
-      (purpose as SmsCodePurpose) ?? SmsCodePurpose.BOOKING
-    )
+    const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? ''
 
+    // Run Turnstile check and SMS send in parallel to cut latency in half
+    const [human, result] = await Promise.all([
+      verifyTurnstile(cfToken ?? '', ip),
+      sendVerificationCode(normalized, (purpose as SmsCodePurpose) ?? SmsCodePurpose.BOOKING),
+    ])
+
+    if (!human) return NextResponse.json({ error: 'BOT_DETECTED' }, { status: 403 })
     if (!result.success) {
       const status = result.error === 'RATE_LIMITED' ? 429 : 500
       return NextResponse.json({ error: result.error }, { status })
