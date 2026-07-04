@@ -51,9 +51,12 @@ export async function PUT(
     return NextResponse.json({ error: 'Expected array of 7 days' }, { status: 400 })
   }
 
-  // Validate time format HH:MM
+  // Validate dayOfWeek (0–6) and time format HH:MM
   const timeRe = /^\d{2}:\d{2}$/
   for (const day of body) {
+    if (!Number.isInteger(day.dayOfWeek) || day.dayOfWeek < 0 || day.dayOfWeek > 6) {
+      return NextResponse.json({ error: 'Invalid dayOfWeek' }, { status: 400 })
+    }
     if (!timeRe.test(day.openTime) || !timeRe.test(day.closeTime)) {
       return NextResponse.json({ error: 'Invalid time format' }, { status: 400 })
     }

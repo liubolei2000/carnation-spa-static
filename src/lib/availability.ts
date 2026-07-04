@@ -346,9 +346,10 @@ export async function createAppointmentSafe(params: {
 // ─────────────────────────────────────────
 
 export async function rescheduleAppointment(
-  appointmentId: string,
-  newStart:      Date,
-  durationMins:  number
+  appointmentId:  string,
+  newStart:       Date,
+  durationMins:   number,
+  newTherapistId?: string   // if provided, changes therapist atomically within the same transaction
 ) {
   return prisma.$transaction(async (tx) => {
     const appt = await tx.appointment.findUnique({
@@ -359,8 +360,10 @@ export async function rescheduleAppointment(
     if (!appt) throw new Error('NOT_FOUND')
     if (appt.status === 'CANCELLED') throw new Error('ALREADY_CANCELLED')
 
+    const therapistId = newTherapistId ?? appt.therapistId
+
     const buffer = (await tx.therapist.findUnique({
-      where:  { id: appt.therapistId },
+      where:  { id: therapistId },
       select: { bufferMins: true },
     }))?.bufferMins ?? 15
 
@@ -372,7 +375,7 @@ export async function rescheduleAppointment(
     // 事务内重新检测冲突，防止竞态
     const conflicts = await tx.appointment.findMany({
       where: {
-        therapistId:   appt.therapistId,
+        therapistId,
         status:        { notIn: [AppointmentStatus.CANCELLED] },
         appointmentAt: { gte: dayStart, lte: dayEnd },
         id:            { not: appointmentId },
@@ -391,6 +394,7 @@ export async function rescheduleAppointment(
     return tx.appointment.update({
       where: { id: appointmentId },
       data:  {
+        ...(newTherapistId ? { therapistId: newTherapistId } : {}),
         appointmentAt: newStart,
         endsAt:        newEnd,
         reminded24h:   false,

@@ -21,8 +21,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 })
 
   const { name, description, durationMin, price, imageUrl, sortOrder } = await req.json()
-  if (!name || !durationMin || !price)
+  if (!name || !durationMin)
     return NextResponse.json({ error: 'MISSING_FIELDS' }, { status: 400 })
+  if (Number(durationMin) <= 0)
+    return NextResponse.json({ error: 'INVALID_DURATION' }, { status: 400 })
+  if (Number(price) < 0)
+    return NextResponse.json({ error: 'INVALID_PRICE' }, { status: 400 })
 
   const service = await prisma.service.create({
     data: { name, description, durationMin: Number(durationMin), price: Number(price), imageUrl, sortOrder: sortOrder ?? 0 },

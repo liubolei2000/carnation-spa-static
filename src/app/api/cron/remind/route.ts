@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
   })
 
   for (const appt of due24h) {
-    await sendReminder24h({
+    const ok = await sendReminder24h({
       customerPhone: appt.customerPhone,
       customerName:  appt.customerName,
       serviceName:   appt.service.name,
@@ -39,10 +39,14 @@ export async function GET(req: NextRequest) {
       appointmentAt: appt.appointmentAt,
       manageToken:   appt.manageToken,
     })
-    await prisma.appointment.update({
-      where: { id: appt.id },
-      data:  { reminded24h: true },
-    })
+    if (ok) {
+      await prisma.appointment.update({
+        where: { id: appt.id },
+        data:  { reminded24h: true },
+      })
+    } else {
+      console.error('[Cron] 24h reminder SMS failed for appointment', appt.id)
+    }
   }
 
   // ── 2h 提醒：2–3小时后的预约 ──
@@ -62,7 +66,7 @@ export async function GET(req: NextRequest) {
   })
 
   for (const appt of due2h) {
-    await sendReminder2h({
+    const ok = await sendReminder2h({
       customerPhone: appt.customerPhone,
       customerName:  appt.customerName,
       serviceName:   appt.service.name,
@@ -70,10 +74,14 @@ export async function GET(req: NextRequest) {
       appointmentAt: appt.appointmentAt,
       manageToken:   appt.manageToken,
     })
-    await prisma.appointment.update({
-      where: { id: appt.id },
-      data:  { reminded2h: true },
-    })
+    if (ok) {
+      await prisma.appointment.update({
+        where: { id: appt.id },
+        data:  { reminded2h: true },
+      })
+    } else {
+      console.error('[Cron] 2h reminder SMS failed for appointment', appt.id)
+    }
   }
 
   console.log(`[Cron] 24h reminders: ${due24h.length}  2h reminders: ${due2h.length}`)

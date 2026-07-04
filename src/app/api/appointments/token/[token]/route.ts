@@ -35,7 +35,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const action = body.action ?? 'reschedule'
 
   if (action === 'cancel') {
-    await prisma.appointment.update({ where: { id: appt.id }, data: { status: 'CANCELLED' } })
+    // Atomic: only cancel if not already cancelled (race-condition safe)
+    const result = await prisma.appointment.updateMany({
+      where: { id: appt.id, status: { not: 'CANCELLED' } },
+      data:  { status: 'CANCELLED' },
+    })
+    if (result.count === 0)
+      return NextResponse.json({ error: 'ALREADY_CANCELLED' }, { status: 400 })
     await sendCancellationNotice({
       customerPhone: appt.customerPhone,
       customerName:  appt.customerName,
@@ -51,13 +57,14 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const { date, time, therapistId } = body
   if (!date || !time) return NextResponse.json({ error: 'MISSING_FIELDS' }, { status: 400 })
   const newStart = new Date(`${date}T${time}:00`)
+  if (isNaN(newStart.getTime()))
+    return NextResponse.json({ error: 'INVALID_DATETIME' }, { status: 400 })
+
+  // Pass new therapistId into the transaction so the change is atomic with the time update
+  const newTherapistId = (therapistId && therapistId !== appt.therapistId) ? therapistId : undefined
 
   try {
-    // If therapist changed, update that too
-    if (therapistId && therapistId !== appt.therapistId) {
-      await prisma.appointment.update({ where: { id: appt.id }, data: { therapistId } })
-    }
-    await rescheduleAppointment(appt.id, newStart, appt.service.durationMin)
+    await rescheduleAppointment(appt.id, newStart, appt.service.durationMin, newTherapistId)
     const updated = await prisma.appointment.findUnique({ where: { id: appt.id }, include })
     await sendRescheduleConfirmation({
       customerPhone: appt.customerPhone,
@@ -70,8 +77,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     const masked = { ...updated!, customerPhone: appt.customerPhone.replace(/(\+\d{1,2})\d+(\d{4})$/, '$1****$2') }
     return NextResponse.json(masked)
   } catch (err: any) {
-    if (err.message === 'TIME_SLOT_TAKEN')
-      return NextResponse.json({ error: 'TIME_SLOT_TAKEN' }, { status: 409 })
+    if (err.message === 'TIME_SLOT_TAKEN')    return NextResponse.json({ error: 'TIME_SLOT_TAKEN' },    { status: 409 })
+    if (err.message === 'NOT_FOUND')          return NextResponse.json({ error: 'NOT_FOUND' },          { status: 404 })
+    if (err.message === 'ALREADY_CANCELLED')  return NextResponse.json({ error: 'ALREADY_CANCELLED' },  { status: 400 })
+    if (err.message === 'OUTSIDE_BUSINESS_HOURS') return NextResponse.json({ error: 'OUTSIDE_BUSINESS_HOURS' }, { status: 400 })
+    console.error('[Reschedule Error]', err)
     return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 }

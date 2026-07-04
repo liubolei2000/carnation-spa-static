@@ -209,12 +209,12 @@ export async function sendBookingConfirmation(info: BookingInfo) {
   await sendSms(OWNER,
     `【新预约】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}${info.notes ? `\n备注：${info.notes}` : ''}`)
 }
-export async function sendReminder24h(info: BookingInfo) {
-  await sendSms(info.customerPhone,
+export async function sendReminder24h(info: BookingInfo): Promise<boolean> {
+  return sendSms(info.customerPhone,
     `[Carnation Spa] Reminder: Tomorrow at ${fmtTime(info.appointmentAt)} with ${info.therapistName}.\nDirections: ${MAPS_URL}\nReschedule: ${manageUrl(info.manageToken)}`)
 }
-export async function sendReminder2h(info: BookingInfo) {
-  await sendSms(info.customerPhone,
+export async function sendReminder2h(info: BookingInfo): Promise<boolean> {
+  return sendSms(info.customerPhone,
     `[Carnation Spa] See you in ~2 hours! Today at ${fmtTime(info.appointmentAt)} · ${info.therapistName}\nDirections: ${MAPS_URL}`)
 }
 export async function sendRescheduleConfirmation(info: BookingInfo) {
