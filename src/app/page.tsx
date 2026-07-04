@@ -220,26 +220,26 @@ export default function HomePage() {
 
       {/* NAV */}
       <nav style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',justifyContent:'space-between',alignItems:'center', padding:scrolled?'1rem 1.5rem':'1.5rem 2rem', background:scrolled?'rgba(255,255,255,0.95)':'rgba(255,255,255,0)', backdropFilter:scrolled?'blur(12px)':'none', borderBottom:scrolled?'1px solid #EDD8DF':'none', transition:'all 0.4s' }}>
-        <a href="#" style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,letterSpacing:'0.2em',color:'#1A1218',textDecoration:'none' }}>Carnation</a>
+        <a href="#" style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:400,letterSpacing:'0.2em',color:scrolled?'#1A1218':'#FFF8FA',textDecoration:'none' }}>Carnation</a>
         {/* Desktop nav */}
         <div style={{ display:'flex',alignItems:'center',gap:'2rem' }}>
           <ul style={{ display:'flex',gap:'2rem',listStyle:'none',margin:0 }}>
             {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
               <li key={l} style={{ display:'none' }} className="desktop-nav-item">
-                <a href={h} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'#8A4858',textDecoration:'none' }}>{l}</a>
+                <a href={h} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:scrolled?'#8A4858':'rgba(250,246,240,0.8)',textDecoration:'none' }}>{l}</a>
               </li>
             ))}
           </ul>
-          <a href="tel:9783300895" style={{ display:'none',fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'#8A4858',textDecoration:'none' }} className="desktop-nav-item">
+          <a href="tel:9783300895" style={{ display:'none',fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.12em',textTransform:'uppercase',color:scrolled?'#8A4858':'rgba(250,246,240,0.8)',textDecoration:'none' }} className="desktop-nav-item">
             (978) 330-0895
           </a>
-          <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.65rem 1.4rem',background:'transparent',border:'1px solid #D4899A',color:'#D4899A',cursor:'pointer',borderRadius:1,transition:'all 0.3s' }}>
+          <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.65rem 1.4rem',background:'transparent',border:`1px solid ${scrolled?'#D4899A':'rgba(250,246,240,0.5)'}`,color:scrolled?'#D4899A':'#FFF8FA',cursor:'pointer',borderRadius:1,transition:'all 0.3s' }}>
             Book Now
           </button>
           {/* Hamburger */}
           <button onClick={()=>setNavOpen(o=>!o)} style={{ display:'flex',flexDirection:'column',gap:5,background:'transparent',border:'none',cursor:'pointer',padding:'4px' }} className="hamburger-btn" aria-label="Menu">
             {[0,1,2].map(i=>(
-              <span key={i} style={{ display:'block',width:22,height:1.5,background:'#1A1218',borderRadius:2,transition:'all 0.3s',transform: navOpen&&i===0?'rotate(45deg) translate(4.5px,4.5px)':navOpen&&i===1?'scaleX(0)':navOpen&&i===2?'rotate(-45deg) translate(4.5px,-4.5px)':'none',opacity:navOpen&&i===1?0:1 }} />
+              <span key={i} style={{ display:'block',width:22,height:1.5,background:scrolled?'#1A1218':'#FFF8FA',borderRadius:2,transition:'all 0.3s',transform: navOpen&&i===0?'rotate(45deg) translate(4.5px,4.5px)':navOpen&&i===1?'scaleX(0)':navOpen&&i===2?'rotate(-45deg) translate(4.5px,-4.5px)':'none',opacity:navOpen&&i===1?0:1 }} />
             ))}
           </button>
         </div>
@@ -265,26 +265,30 @@ export default function HomePage() {
       )}
 
       {/* HERO */}
-      <div style={{ position:'relative',height:'100vh',minHeight:640,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',background:'#FFFFFF' }}>
-        <div style={{ position:'absolute',width:600,height:600,borderRadius:'50%',background:'#DDB8C4',filter:'blur(120px)',opacity:0.12,top:-200,right:-100,animation:'drift 12s ease-in-out infinite',pointerEvents:'none' }} />
-        <div style={{ position:'absolute',width:400,height:400,borderRadius:'50%',background:'#EDD8DF',filter:'blur(100px)',opacity:0.18,bottom:50,left:-100,animation:'drift 16s ease-in-out infinite reverse',pointerEvents:'none' }} />
+      <div style={{ position:'relative',height:'100vh',minHeight:640,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden' }}>
+        {/* Background image */}
+        <img src="/hero-bg.webp" alt="" aria-hidden="true" style={{ position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 30%',pointerEvents:'none' }} />
+        {/* Overlay */}
+        <div style={{ position:'absolute',inset:0,background:'linear-gradient(160deg,rgba(26,18,24,0.62) 0%,rgba(26,18,24,0.38) 50%,rgba(26,18,24,0.65) 100%)' }} />
+        {/* Subtle carnation tint at bottom */}
+        <div style={{ position:'absolute',bottom:0,left:0,right:0,height:'40%',background:'linear-gradient(to top,rgba(138,72,88,0.25),transparent)',pointerEvents:'none' }} />
         <div style={{ position:'relative',zIndex:2,textAlign:'center',padding:'0 2rem',animation:'heroReveal 1.4s both' }}>
-          <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.4em',textTransform:'uppercase',color:'#B09098',marginBottom:'1.8rem' }}>carnation spa · burlington, ma</div>
-          <h1 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(3.5rem,9vw,8rem)',fontWeight:300,lineHeight:0.95,color:'#1A1218',marginBottom:'1.5rem' }}>
-            Feel Good,<br/><em style={{ fontStyle:'italic',color:'#D4899A' }}>Come Back</em>
+          <div style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.4em',textTransform:'uppercase',color:'rgba(221,184,196,0.85)',marginBottom:'1.8rem' }}>carnation spa · burlington, ma</div>
+          <h1 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(3.5rem,9vw,8rem)',fontWeight:300,lineHeight:0.95,color:'#FFF8FA',marginBottom:'1.5rem' }}>
+            Feel Good,<br/><em style={{ fontStyle:'italic',color:'#DDB8C4' }}>Come Back</em>
           </h1>
-          <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'1.1rem',fontWeight:300,color:'rgba(26,18,24,0.55)',letterSpacing:'0.08em',marginBottom:'3rem',maxWidth:460,margin:'0 auto 3rem',lineHeight:1.8 }}>
+          <p style={{ fontFamily:"'Jost',sans-serif",fontSize:'1.1rem',fontWeight:300,color:'rgba(250,246,240,0.75)',letterSpacing:'0.08em',marginBottom:'3rem',maxWidth:460,margin:'0 auto 3rem',lineHeight:1.8 }}>
             Burlington's go-to massage studio — deep tissue, Swedish, prenatal &amp; more. Licensed therapists ready to help.
           </p>
           <div style={{ display:'flex',alignItems:'center',gap:'1rem',flexWrap:'wrap',justifyContent:'center' }}>
             <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.18em',textTransform:'uppercase',padding:'1rem 2.8rem',background:'#D4899A',color:'white',border:'none',cursor:'pointer',borderRadius:1,transition:'all 0.35s' }}>Book a Session</button>
-            <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'#8A4858',border:'1px solid #EDD8DF',borderRadius:1,textDecoration:'none' }}>📞 Call</a>
-            <a href="sms:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'#8A4858',border:'1px solid #EDD8DF',borderRadius:1,textDecoration:'none' }}>💬 Text Us</a>
+            <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'rgba(250,246,240,0.85)',border:'1px solid rgba(250,246,240,0.35)',borderRadius:1,textDecoration:'none' }}>📞 Call</a>
+            <a href="sms:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.72rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'1rem 1.6rem',background:'transparent',color:'rgba(250,246,240,0.85)',border:'1px solid rgba(250,246,240,0.35)',borderRadius:1,textDecoration:'none' }}>💬 Text Us</a>
           </div>
         </div>
         <div style={{ position:'absolute',bottom:'2.5rem',left:'50%',transform:'translateX(-50%)',display:'flex',flexDirection:'column',alignItems:'center',gap:'0.5rem' }}>
-          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.6rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,18,24,0.3)' }}>scroll</span>
-          <div style={{ width:1,height:48,background:'linear-gradient(to bottom,rgba(26,18,24,0.2),transparent)' }} />
+          <span style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.6rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(250,246,240,0.45)' }}>scroll</span>
+          <div style={{ width:1,height:48,background:'linear-gradient(to bottom,rgba(250,246,240,0.4),transparent)' }} />
         </div>
       </div>
 
