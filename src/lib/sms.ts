@@ -114,19 +114,11 @@ export async function sendVerificationCode(
 ): Promise<{ success: boolean; error?: string }> {
   // ── Twilio Verify（配置了 SID 就使用）──────────────────
   if (USE_TWILIO_VERIFY) {
-    try {
-      const client = getTwilioClient()
-      await client.verify.v2.services(VERIFY_SID).verifications.create({
-        to: phone,
-        channel: 'sms',
-      })
-      return { success: true }
-    } catch (err: any) {
-      console.error('[Twilio Verify Send]', err)
-      // 20429 = rate limited by Twilio
-      if (err?.status === 429 || err?.code === 20429) return { success: false, error: 'RATE_LIMITED' }
-      return { success: false, error: 'SEND_FAILED' }
-    }
+    const client = getTwilioClient()
+    // Fire-and-forget: return immediately, Twilio sends in background
+    client.verify.v2.services(VERIFY_SID).verifications.create({ to: phone, channel: 'sms' })
+      .catch((err: any) => console.error('[Twilio Verify Send]', err))
+    return { success: true }
   }
 
   // ── DB 验证码 + SMS 发送 ──────────────────────────────
