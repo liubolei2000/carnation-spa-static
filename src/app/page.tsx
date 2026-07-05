@@ -83,6 +83,13 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).has('book')) {
+      setOpen(true)
+      document.body.style.overflow = 'hidden'
+    }
+  }, [])
+
+  useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', fn)
     return () => window.removeEventListener('scroll', fn)
