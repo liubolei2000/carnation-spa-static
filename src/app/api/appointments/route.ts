@@ -100,6 +100,7 @@ export async function POST(req: NextRequest) {
       therapistName: appt.therapist.name,
       appointmentAt: appt.appointmentAt,
       manageToken:   appt.manageToken,
+      durationMin:   service.durationMin,
       notes,
     })
 

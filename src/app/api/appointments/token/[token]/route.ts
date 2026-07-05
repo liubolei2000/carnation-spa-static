@@ -73,6 +73,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       therapistName: updated!.therapist.name,
       appointmentAt: updated!.appointmentAt,
       manageToken:   appt.manageToken,
+      durationMin:   appt.service.durationMin,
     })
     const masked = { ...updated!, customerPhone: appt.customerPhone.replace(/(\+\d{1,2})\d+(\d{4})$/, '$1****$2') }
     return NextResponse.json(masked)
