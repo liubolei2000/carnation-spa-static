@@ -139,7 +139,7 @@ export async function sendVerificationCode(
   } else {
     // Fire-and-forget: return immediately after DB record is created,
     // SMS delivery happens in background to eliminate response latency
-    sendSms(phone, `[Carnation Spa] Your verification code is: ${code}  (valid 10 min)`)
+    sendSms(phone, `Carnation Spa: Your verification code is: ${code}  (valid 10 min)`)
       .then(ok => { if (!ok) console.error('[SMS Code] Failed to send to', phone) })
       .catch(err => console.error('[SMS Code] Error sending to', phone, err))
   }
@@ -211,27 +211,27 @@ const OWNER = '+19783300895'
 
 export async function sendBookingConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
-    `[Carnation Spa] Booking confirmed!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
+    `Carnation Spa: Booking confirmed!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
   await sendSms(OWNER,
     `【新预约】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}${info.notes ? `\n备注：${info.notes}` : ''}`)
 }
 export async function sendReminder24h(info: BookingInfo): Promise<boolean> {
   return sendSms(info.customerPhone,
-    `[Carnation Spa] Reminder: Tomorrow at ${fmtTime(info.appointmentAt)} with ${info.therapistName}.\nDirections: ${MAPS_URL}\nReschedule: ${manageUrl(info.manageToken)}`)
+    `Carnation Spa: Reminder: Tomorrow at ${fmtTime(info.appointmentAt)} with ${info.therapistName}.\nDirections: ${MAPS_URL}\nReschedule: ${manageUrl(info.manageToken)}`)
 }
 export async function sendReminder2h(info: BookingInfo): Promise<boolean> {
   return sendSms(info.customerPhone,
-    `[Carnation Spa] See you in ~2 hours! Today at ${fmtTime(info.appointmentAt)} · ${info.therapistName}\nDirections: ${MAPS_URL}`)
+    `Carnation Spa: See you in ~2 hours! Today at ${fmtTime(info.appointmentAt)} · ${info.therapistName}\nDirections: ${MAPS_URL}`)
 }
 export async function sendRescheduleConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
-    `[Carnation Spa] Rescheduled!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
+    `Carnation Spa: Rescheduled!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
   await sendSms(OWNER,
     `【改期】${info.customerName}\n项目：${info.serviceName}\n新时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}`)
 }
 export async function sendCancellationNotice(info: BookingInfo) {
   await sendSms(info.customerPhone,
-    `[Carnation Spa] Your booking on ${fmt(info.appointmentAt)} with ${info.therapistName} has been cancelled.\nBook again: ${process.env.NEXT_PUBLIC_APP_URL}`)
+    `Carnation Spa: Your booking on ${fmt(info.appointmentAt)} with ${info.therapistName} has been cancelled.\nBook again: ${process.env.NEXT_PUBLIC_APP_URL}`)
   await sendSms(OWNER,
     `【取消】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}`)
 }
