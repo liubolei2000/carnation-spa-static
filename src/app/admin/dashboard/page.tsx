@@ -39,7 +39,7 @@ export default function DashboardPage() {
   const [isMobile, setIsMobile] = useState(false)
   const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null)
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date().toLocaleDateString('en-CA')
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
   useEffect(() => {

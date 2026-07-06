@@ -23,7 +23,7 @@ function getWeekDates(anchor: string) {
   const day = d.getDay()
   return Array.from({length:7}, (_,i) => {
     const x = new Date(d); x.setDate(d.getDate() - day + i)
-    return x.toISOString().split('T')[0]
+    return x.toLocaleDateString('en-CA')
   })
 }
 
@@ -31,7 +31,7 @@ export default function SchedulePage() {
   const session = useAuth()
   const [appts, setAppts]     = useState<Appt[]>([])
   const [loading, setLoading] = useState(true)
-  const [date, setDate]       = useState(new Date().toISOString().split('T')[0])
+  const [date, setDate]       = useState(new Date().toLocaleDateString('en-CA'))
   const [view, setView]       = useState<'day'|'week'>('day')
   const [weekAppts, setWeekAppts] = useState<Record<string,Appt[]>>({})
   const [modal, setModal]     = useState<Appt|null>(null)
@@ -63,7 +63,7 @@ export default function SchedulePage() {
     }
   }, [date, view])
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date().toLocaleDateString('en-CA')
   const totalRevenue = appts.filter(a=>['CONFIRMED','COMPLETED'].includes(a.status)).reduce((s,a)=>s+Number(a.service.price),0)
 
   return (

@@ -193,11 +193,17 @@ interface BookingInfo {
 
 const MAPS_URL = 'https://maps.google.com/?q=120+Cambridge+St+STE+8+Burlington+MA+01803'
 
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 function fmt(d: Date) {
-  return d.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
+  // TZ=America/New_York is set in docker-compose, so local getters return Eastern time
+  const h24 = d.getHours(), min = String(d.getMinutes()).padStart(2,'0')
+  const h12 = h24 % 12 || 12, ampm = h24 >= 12 ? 'PM' : 'AM'
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}, ${h12}:${min} ${ampm}`
 }
 function fmtTime(d: Date) {
-  return d.toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true })
+  const h24 = d.getHours(), min = String(d.getMinutes()).padStart(2,'0')
+  const h12 = h24 % 12 || 12, ampm = h24 >= 12 ? 'PM' : 'AM'
+  return `${h12}:${min} ${ampm}`
 }
 function manageUrl(token: string) { return `${process.env.NEXT_PUBLIC_APP_URL}/manage/${token}` }
 
