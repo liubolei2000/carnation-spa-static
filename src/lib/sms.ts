@@ -37,7 +37,7 @@ async function sendSmsGateway(to: string, message: string): Promise<boolean> {
     const res = await fetch(`${baseUrl}/message`, {
       method:  'POST',
       headers: {
-        'Content-Type':  'application/json',
+        'Content-Type':  'application/json; charset=utf-8',
         'Authorization': `Basic ${credentials}`,
       },
       body: JSON.stringify({ message, phoneNumbers: [to] }),
