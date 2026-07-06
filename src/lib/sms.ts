@@ -211,7 +211,7 @@ const OWNER = '+19783300895'
 
 export async function sendBookingConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
-    `[Carnation Spa] Booking confirmed!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nDirections: ${MAPS_URL}\nManage: ${manageUrl(info.manageToken)}`)
+    `[Carnation Spa] Booking confirmed!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nManage: ${manageUrl(info.manageToken)}`)
   await sendSms(OWNER,
     `【新预约】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}${info.notes ? `\n备注：${info.notes}` : ''}`)
 }
@@ -225,7 +225,7 @@ export async function sendReminder2h(info: BookingInfo): Promise<boolean> {
 }
 export async function sendRescheduleConfirmation(info: BookingInfo) {
   await sendSms(info.customerPhone,
-    `[Carnation Spa] Your appointment has been rescheduled!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
+    `[Carnation Spa] Rescheduled!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nNew time: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nManage: ${manageUrl(info.manageToken)}`)
   await sendSms(OWNER,
     `【改期】${info.customerName}\n项目：${info.serviceName}\n新时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}`)
 }
