@@ -1,0 +1,18 @@
+# Cloudflare Pages routing rules
+# Deploy with: npm run build:pages
+# Set NEXT_PUBLIC_API_URL and CORS_ORIGIN in CF Pages environment variables.
+
+# ── Admin panel ──────────────────────────────────────────────────────────────
+# Redirect all admin traffic to the Cloudflare Tunnel URL (local server).
+# Replace YOUR_TUNNEL_HOSTNAME with your actual tunnel hostname.
+/admin/*  https://YOUR_TUNNEL_HOSTNAME/admin/:splat  302
+
+# ── Book shortcut ────────────────────────────────────────────────────────────
+/book     /?book=1  302
+/book/    /?book=1  302
+
+# ── Manage page SPA fallback ─────────────────────────────────────────────────
+# Static export generates one shell at /manage/_/index.html.
+# CF Pages serves it for any /manage/<token> URL (static files take precedence,
+# so /manage/_/ itself is served directly without triggering this rule).
+/manage/*  /manage/_/  200

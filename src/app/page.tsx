@@ -19,6 +19,9 @@ interface AvailResult { therapistId:string; therapistName:string; slots:TimeSlot
 
 const EMOJIS  = ['🌿','💆','🕯️','🪨','💎','🌸','🧘','✨']
 const TAVATAR = ['🧘‍♀️','🌸','💫','🌿','✨','💆']
+// When deployed to Cloudflare Pages, NEXT_PUBLIC_API_URL points to the CF Tunnel URL.
+// Empty string = relative path (works on the Termux server and in local dev).
+const API = process.env.NEXT_PUBLIC_API_URL ?? ''
 
 function getNext30Days() {
   return Array.from({length:30},(_,i)=>{ const d=new Date(); d.setDate(d.getDate()+i); return d })
@@ -75,9 +78,9 @@ export default function HomePage() {
   const [showGallery, setShowGallery] = useState(true)
 
   useEffect(() => {
-    fetch('/api/services').then(r=>r.json()).then(setServices).catch(()=>{})
-    fetch('/api/therapists').then(r=>r.json()).then(setTherapists).catch(()=>{})
-    fetch('/api/site-config').then(r=>r.json()).then((d: Record<string,string>) => {
+    fetch(API + '/api/services').then(r=>r.json()).then(setServices).catch(()=>{})
+    fetch(API + '/api/therapists').then(r=>r.json()).then(setTherapists).catch(()=>{})
+    fetch(API + '/api/site-config').then(r=>r.json()).then((d: Record<string,string>) => {
       if (d.show_gallery === '0') setShowGallery(false)
     }).catch(()=>{})
   }, [])
@@ -98,7 +101,7 @@ export default function HomePage() {
   useEffect(() => {
     if (!selDate || !selService) return
     setLoadingAvail(true); setAvail([]); setSelTherapist(''); setSelTime('')
-    fetch(`/api/availability?date=${selDate}&serviceId=${selService.id}`)
+    fetch(`${API}/api/availability?date=${selDate}&serviceId=${selService.id}`)
       .then(r=>r.json()).then(d=>{
         if (!Array.isArray(d)) { setAvail([]); setLoadingAvail(false); return }
         // Filter out past slots on the client using local time
@@ -192,7 +195,7 @@ export default function HomePage() {
       tsToken.current = ''
       if (tsWidgetId.current && window.turnstile) window.turnstile.reset(tsWidgetId.current)
 
-      const res = await fetch('/api/sms/send', {
+      const res = await fetch(API + '/api/sms/send', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ phone, purpose:'BOOKING', cfToken })
       })
@@ -214,7 +217,7 @@ export default function HomePage() {
   async function confirmBooking() {
     if (!code) { setError('Please enter the verification code'); return }
     setSubmitting(true); setError('')
-    const res = await fetch('/api/appointments', {
+    const res = await fetch(API + '/api/appointments', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body:JSON.stringify({ serviceId:selService!.id, therapistId:selTherapist, customerName:name, customerPhone:phone, date:selDate, time:selTime, notes: [notes, addHotStone?'Add-on: Hot Stone (Free)':''].filter(Boolean).join(' | '), smsCode:code, source:'ONLINE' })
     })

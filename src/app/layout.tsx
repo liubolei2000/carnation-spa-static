@@ -93,9 +93,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
+            var API = ${JSON.stringify(process.env.NEXT_PUBLIC_API_URL ?? '')};
             var p = window.location.pathname;
             var r = document.referrer || '';
-            fetch('/api/analytics/pageview', {
+            fetch(API + '/api/analytics/pageview', {
               method:'POST',
               headers:{'Content-Type':'application/json'},
               body: JSON.stringify({path:p, referrer:r}),

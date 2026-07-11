@@ -1,5 +1,8 @@
-import { redirect } from 'next/navigation'
+'use client'
+import { useEffect } from 'react'
 
+// Client-side redirect — compatible with `output: 'export'` (static build)
 export default function BookPage() {
-  redirect('/?book=1')
+  useEffect(() => { window.location.replace('/?book=1') }, [])
+  return null
 }

@@ -46,6 +46,12 @@ async function sendSmsGateway(to: string, message: string): Promise<boolean> {
       console.error('[SMS Gateway Error]', res.status, await res.text())
       return false
     }
+    const json = await res.json()
+    const failed = (json?.data ?? []).find((r: any) => r.state === 'Failed')
+    if (failed) {
+      console.error('[SMS Gateway Error] Modem failed to send:', failed)
+      return false
+    }
     return true
   } catch (err) {
     console.error('[SMS Gateway Error]', err)
@@ -210,10 +216,12 @@ function manageUrl(token: string) { return `${process.env.NEXT_PUBLIC_APP_URL}/m
 const OWNER = '+19783300895'
 
 export async function sendBookingConfirmation(info: BookingInfo) {
-  await sendSms(info.customerPhone,
-    `Carnation Spa: Booking confirmed!\nService: ${info.serviceName}${info.durationMin ? ` (${info.durationMin} min)` : ''}\nTime: ${fmt(info.appointmentAt)}\nTherapist: ${info.therapistName}\nAddress: 120 Cambridge St, Suite 8, Burlington MA\nManage: ${manageUrl(info.manageToken)}`)
-  await sendSms(OWNER,
-    `【新预约】${info.customerName}\n项目：${info.serviceName}\n时间：${fmt(info.appointmentAt)}\n技师：${info.therapistName}\n电话：${info.customerPhone}${info.notes ? `\n备注：${info.notes}` : ''}`)
+  const ok1 = await sendSms(info.customerPhone,
+    `Carnation Spa confirmed: ${info.serviceName}${info.durationMin ? ` ${info.durationMin}min` : ''} on ${fmt(info.appointmentAt)} w/ ${info.therapistName}. Manage: ${manageUrl(info.manageToken)}`)
+  if (!ok1) console.error('[SMS] Failed to send booking confirmation to customer:', info.customerPhone)
+  const ok2 = await sendSms(OWNER,
+    `New: ${info.customerName} ${info.serviceName} ${fmt(info.appointmentAt)} ${info.therapistName} ${info.customerPhone}${info.notes ? ` Note:${info.notes}` : ''}`)
+  if (!ok2) console.error('[SMS] Failed to send booking notification to owner')
 }
 export async function sendReminder24h(info: BookingInfo): Promise<boolean> {
   return sendSms(info.customerPhone,
