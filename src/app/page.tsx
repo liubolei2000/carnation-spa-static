@@ -50,7 +50,6 @@ export default function HomePage() {
   const [addHotStone, setAddHotStone] = useState(false)
   const [scrolled, setScrolled]       = useState(false)
   const [hoveredSvc, setHoveredSvc]   = useState<string|null>(null)
-  const [navOpen, setNavOpen]         = useState(false)
 
   const hotStone     = services.find(s => s.name.toLowerCase().includes('hot stone'))
   const mainServices = services.filter(s => !s.name.toLowerCase().includes('hot stone'))
@@ -78,9 +77,9 @@ export default function HomePage() {
   const [showGallery, setShowGallery] = useState(true)
 
   useEffect(() => {
-    fetch(API + '/api/services').then(r=>r.json()).then(setServices).catch(()=>{})
-    fetch(API + '/api/therapists').then(r=>r.json()).then(setTherapists).catch(()=>{})
-    fetch(API + '/api/site-config').then(r=>r.json()).then((d: Record<string,string>) => {
+    fetch('/data/services.json').then(r=>r.json()).then(setServices).catch(()=>{})
+    fetch('/data/therapists.json').then(r=>r.json()).then(setTherapists).catch(()=>{})
+    fetch('/data/site-config.json').then(r=>r.json()).then((d: Record<string,string>) => {
       if (d.show_gallery === '0') setShowGallery(false)
     }).catch(()=>{})
   }, [])
@@ -247,8 +246,7 @@ export default function HomePage() {
         @keyframes heroReveal{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
         @keyframes overlayUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-        @media(min-width:768px){.desktop-nav-item{display:block!important}.hamburger-btn{display:none!important}}
-        @media(max-width:767px){.hamburger-btn{display:flex!important}}
+        @media(min-width:768px){.desktop-nav-item{display:block!important}}
       `}} />
 
       {/* NAV */}
@@ -269,33 +267,9 @@ export default function HomePage() {
           <button onClick={openDrawer} style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',padding:'0.65rem 1.4rem',background:'transparent',border:`1px solid ${scrolled?'#D4899A':'rgba(250,246,240,0.5)'}`,color:scrolled?'#D4899A':'#FFF8FA',cursor:'pointer',borderRadius:1,transition:'all 0.3s' }}>
             Book Now
           </button>
-          {/* Hamburger */}
-          <button onClick={()=>setNavOpen(o=>!o)} style={{ display:'flex',flexDirection:'column',gap:5,background:'transparent',border:'none',cursor:'pointer',padding:'4px' }} className="hamburger-btn" aria-label="Menu">
-            {[0,1,2].map(i=>(
-              <span key={i} style={{ display:'block',width:22,height:1.5,background:scrolled?'#1A1218':'#FFF8FA',borderRadius:2,transition:'all 0.3s',transform: navOpen&&i===0?'rotate(45deg) translate(4.5px,4.5px)':navOpen&&i===1?'scaleX(0)':navOpen&&i===2?'rotate(-45deg) translate(4.5px,-4.5px)':'none',opacity:navOpen&&i===1?0:1 }} />
-            ))}
-          </button>
         </div>
       </nav>
 
-      {/* Mobile nav overlay */}
-      {navOpen && (
-        <div style={{ position:'fixed',inset:0,zIndex:99,background:'rgba(243,240,238,0.97)',backdropFilter:'blur(8px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'2.5rem' }}>
-          {[['Services','#services'],['Team','#team'],['About','#about']].map(([l,h])=>(
-            <a key={l} href={h} onClick={()=>setNavOpen(false)}
-              style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:'2.5rem',fontWeight:300,color:'#1A1218',textDecoration:'none',letterSpacing:'0.1em' }}>
-              {l}
-            </a>
-          ))}
-          <button onClick={()=>{ setNavOpen(false); openDrawer() }}
-            style={{ marginTop:'1rem',fontFamily:"'DM Mono',monospace",fontSize:'0.82rem',letterSpacing:'0.2em',textTransform:'uppercase',padding:'1rem 3rem',background:'#D4899A',color:'white',border:'none',cursor:'pointer',borderRadius:1 }}>
-            Book Now
-          </button>
-          <a href="tel:9783300895" style={{ fontFamily:"'DM Mono',monospace",fontSize:'0.78rem',letterSpacing:'0.15em',color:'#B09098',textDecoration:'none' }}>
-            (978) 330-0895
-          </a>
-        </div>
-      )}
 
       {/* HERO */}
       <div style={{ position:'relative',height:'100vh',minHeight:640,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden' }}>

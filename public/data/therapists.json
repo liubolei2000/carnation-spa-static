@@ -1,0 +1,24 @@
+[
+  {
+    "id": "cmmms8qcx0001vpzfyt71vhyz",
+    "name": "Sarah",
+    "title": null,
+    "bio": "Sarah is a licensed massage therapist with 10 years of experience. She specializes in relieving muscle tension and helping clients relax through professional and personalized massage therapy.",
+    "avatarUrl": null,
+    "googleReviewUrl": null,
+    "bufferMins": 15,
+    "isActive": true,
+    "sortOrder": 0
+  },
+  {
+    "id": "cmmms8vrk0002vpzfoenvee8s",
+    "name": " Sherry",
+    "title": null,
+    "bio": "Sherry is a licensed massage therapist who provides relaxing and therapeutic massage services. She focuses on helping clients reduce stress and feel refreshed after every session.",
+    "avatarUrl": null,
+    "googleReviewUrl": null,
+    "bufferMins": 15,
+    "isActive": true,
+    "sortOrder": 1
+  }
+]
