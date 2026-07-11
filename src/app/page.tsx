@@ -21,7 +21,7 @@ const EMOJIS  = ['🌿','💆','🕯️','🪨','💎','🌸','🧘','✨']
 const TAVATAR = ['🧘‍♀️','🌸','💫','🌿','✨','💆']
 // When deployed to Cloudflare Pages, NEXT_PUBLIC_API_URL points to the CF Tunnel URL.
 // Empty string = relative path (works on the Termux server and in local dev).
-const API = process.env.NEXT_PUBLIC_API_URL ?? ''
+const API = ''
 
 function getNext30Days() {
   return Array.from({length:30},(_,i)=>{ const d=new Date(); d.setDate(d.getDate()+i); return d })
